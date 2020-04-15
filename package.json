@@ -1,0 +1,21 @@
+{
+  "name": "html_to_pdf_bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-aws-lambda": "^2.1.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jsdom": "^16.2.2",
+    "pdf-puppeteer": "^1.1.10",
+    "puppeteer-core": "^2.1.1",
+    "readability": "github:mozilla/readability#master",
+    "telegraf": "^3.36.0"
+  }
+}
