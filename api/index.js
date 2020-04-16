@@ -66,9 +66,10 @@ const getReadableContent = async (url) => {
     const doc = await JSDOM.fromURL(url);
     const reader = new Readability(doc.window.document);
     const readblePage = reader.parse();
-
     return readblePage;
   } catch (error) {
+    console.log("getReadableContent", error);
+
     if (error.name === "RequestError") {
       throw "Can't open the link 😞";
     }
