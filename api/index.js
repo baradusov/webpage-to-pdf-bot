@@ -130,7 +130,8 @@ const getPdf = async (message) => {
       };
     }
 
-    const html = await getReadableContent(urls[0]);
+    const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+    const html = await getReadableContent(url);
     if (!html) {
       return {
         pdf: false,
