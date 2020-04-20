@@ -131,7 +131,7 @@ const getPdf = async (message) => {
       };
     }
 
-    const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+    const url = !urls[0].includes("://") ? `http://${urls[0]}` : urls[0];
     const html = await getReadableContent(url);
     if (!html) {
       return {
@@ -164,7 +164,25 @@ bot.start((ctx) =>
 );
 
 bot.on("message", async (ctx) => {
-  const { pdf, name, message } = await getPdf(ctx.message);
+  const data = new Promise(async (resolve) => {
+    const { pdf, name, message } = await getPdf(ctx.message);
+
+    resolve({ pdf, name, message });
+  });
+
+  const timeout = new Promise((resolve) => {
+    setTimeout(
+      () =>
+        resolve({
+          pdf: false,
+          name: "",
+          message: "Can't handle it, the webpage is too big for me",
+        }),
+      9500
+    );
+  });
+
+  const { pdf, name, message } = await Promise.race([data, timeout]);
 
   if (pdf) {
     if (message) {
@@ -178,13 +196,22 @@ bot.on("message", async (ctx) => {
 });
 
 const test = async (ctx) => {
-  const { pdf, name, message } = await getPdf(ctx.message);
+  console.log(ctx.message);
+  const pdf = new Promise(async (resolve) => {
+    const content = await getPdf(ctx.message);
+    resolve(content);
+  });
 
-  if (pdf) {
-    return pdf;
-  }
+  const timeout = new Promise((resolve) => {
+    setTimeout(
+      () => resolve({ pdf: "Can't handle it, the webpage is too big for me" }),
+      9500
+    );
+  });
 
-  return message;
+  const result = await Promise.race([pdf, timeout]);
+
+  return result;
 };
 
 module.exports = async (req, res) => {
@@ -194,6 +221,7 @@ module.exports = async (req, res) => {
 
   // for local testing
   // res.setHeader("Content-Type", "application/pdf");
-  // const pdf = await test(req.body);
-  // res.end(pdf);
+  // const data = await test(req.body);
+  // console.log(data.pdf);
+  // res.end(data.pdf);
 };
