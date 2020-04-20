@@ -125,6 +125,17 @@ const getPdf = async (message) => {
   try {
     const urls = getUrls(message);
     if (!urls) {
+      console.log(
+        JSON.stringify(
+          {
+            status: "botFailure",
+            message: "It doesn't seem to be a link 🤔",
+          },
+          null,
+          2
+        )
+      );
+
       return {
         pdf: false,
         message: "It doesn't seem to be a link 🤔",
@@ -134,6 +145,17 @@ const getPdf = async (message) => {
     const url = !urls[0].includes("://") ? `http://${urls[0]}` : urls[0];
     const html = await getReadableContent(url);
     if (!html) {
+      console.log(
+        JSON.stringify(
+          {
+            status: "botFailure",
+            message: "Can't get the content from the link 😞",
+          },
+          null,
+          2
+        )
+      );
+
       return {
         pdf: false,
         message: "Can't get the content from the link 😞",
@@ -189,8 +211,16 @@ bot.on("message", async (ctx) => {
       ctx.reply(message);
     }
 
+    console.log(
+      JSON.stringify({ status: "botSuccess", message: `${name}.pdf` }, null, 2)
+    );
+
     return ctx.replyWithDocument({ source: pdf, filename: `${name}.pdf` });
   }
+
+  console.log(
+    JSON.stringify({ status: "botFailure", message: message }, null, 2)
+  );
 
   return ctx.reply(message);
 });
