@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.1
+* Fix lambda timeout error
+* Change info on index page
+
+
 ## 0.2.0
 * Add logging to getReadableContent
 * Change info to package.json
