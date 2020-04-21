@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.3
+* Fix reply message text to be more informative
+
 ## 0.2.2
 * Add missing logging
 
