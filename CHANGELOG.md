@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.4
+* Fix missed message text
+
 ## 0.2.3
 * Fix reply message text to be more informative
 
