@@ -234,7 +234,7 @@ const test = async (ctx) => {
 
   const timeout = new Promise((resolve) => {
     setTimeout(
-      () => resolve({ pdf: "Can't handle it, the webpage is too big for me" }),
+      () => resolve({ pdf: "Can't handle it, the webpage is too big. Try sending it to me again." }),
       9500
     );
   });
