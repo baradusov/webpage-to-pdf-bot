@@ -202,7 +202,7 @@ bot.on("message", async (ctx) => {
           name: "",
           message: "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
         }),
-      9500
+      9000
     );
   });
 
