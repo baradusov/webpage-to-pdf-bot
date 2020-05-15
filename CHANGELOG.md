@@ -1,6 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.0
+* Bot now will reply to message with url
+* Fix code styling in pdf
+* Reduce setTimeout time to prevent timeout error
+* Add new logging system
+
 ## 0.2.4
 * Fix missed message text
 
