@@ -4,6 +4,7 @@ const { JSDOM } = require("jsdom");
 const Readability = require("readability");
 const chrome = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
+const logger = require("./_lib/logger");
 
 const FONTS = {
   telugu:
@@ -128,16 +129,7 @@ const getPdf = async (message) => {
   try {
     const urls = getUrls(message);
     if (!urls) {
-      console.log(
-        JSON.stringify(
-          {
-            status: "botFailure",
-            message: "It doesn't seem to be a link 🤔",
-          },
-          null,
-          2
-        )
-      );
+    await logger("botFailure", message.from.id, "no link", "It doesn't seem to be a link 🤔");
 
       return {
         pdf: false,
@@ -148,16 +140,7 @@ const getPdf = async (message) => {
     const url = !urls[0].includes("://") ? `http://${urls[0]}` : urls[0];
     const html = await getReadableContent(url);
     if (!html) {
-      console.log(
-        JSON.stringify(
-          {
-            status: "botFailure",
-            message: "Can't get the content from the link 😞",
-          },
-          null,
-          2
-        )
-      );
+      await logger("botFailure", message.from.id, url, "Can't get the content from the link 😞");
 
       return {
         pdf: false,
@@ -167,6 +150,8 @@ const getPdf = async (message) => {
 
     const { pdf, name } = await generatePdf(html);
 
+    await logger("botSuccess", message.from.id, url, urls.length > 1 ? "One link at a time, sorry" : null);
+
     return {
       pdf,
       name,
@@ -174,6 +159,7 @@ const getPdf = async (message) => {
     };
   } catch (error) {
     console.error(error);
+    await logger("botFailure", message.from.id, "no link", error);
 
     return {
       pdf: false,
@@ -213,10 +199,6 @@ bot.on("message", async (ctx) => {
     if (message) {
       ctx.reply(message);
     }
-
-    console.log(
-      JSON.stringify({ status: "botSuccess", message: `${name}.pdf` }, null, 2)
-    );
 
     return ctx.replyWithDocument({ source: pdf, filename: `${name}.pdf` }, Extra.inReplyTo(ctx.message.message_id));
   }

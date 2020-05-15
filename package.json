@@ -6,13 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["telegram", "bot", "pdf"],
+  "keywords": [
+    "telegram",
+    "bot",
+    "pdf"
+  ],
   "author": "Nuril Baradusov <baradusovnh@gmail.com> (https://baradusov.ru)",
   "license": "ISC",
   "dependencies": {
     "chrome-aws-lambda": "^2.1.1",
     "isomorphic-fetch": "^2.2.1",
     "jsdom": "^16.2.2",
+    "node-fetch": "^2.6.0",
     "pdf-puppeteer": "^1.1.10",
     "puppeteer-core": "^2.1.1",
     "readability": "github:mozilla/readability#master",
