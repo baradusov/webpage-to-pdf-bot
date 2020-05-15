@@ -1,4 +1,5 @@
 const Telegraf = require("telegraf");
+const Extra = require("telegraf/extra");
 const { JSDOM } = require("jsdom");
 const Readability = require("readability");
 const chrome = require("chrome-aws-lambda");
@@ -217,7 +218,7 @@ bot.on("message", async (ctx) => {
       JSON.stringify({ status: "botSuccess", message: `${name}.pdf` }, null, 2)
     );
 
-    return ctx.replyWithDocument({ source: pdf, filename: `${name}.pdf` });
+    return ctx.replyWithDocument({ source: pdf, filename: `${name}.pdf` }, Extra.inReplyTo(ctx.message.message_id));
   }
 
   console.log(
