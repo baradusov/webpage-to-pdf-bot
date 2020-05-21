@@ -129,7 +129,7 @@ const getPdf = async (message) => {
   try {
     const urls = getUrls(message);
     if (!urls) {
-    await logger("botFailure", message.from.id, "no link", "It doesn't seem to be a link 🤔");
+    await logger("botFailure", message.from.id, message.text, "It doesn't seem to be a link 🤔");
 
       return {
         pdf: false,
