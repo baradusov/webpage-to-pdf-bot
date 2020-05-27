@@ -231,9 +231,13 @@ const test = async (ctx) => {
 };
 
 module.exports = async (req, res) => {
-  console.log(JSON.stringify(req.body, null, 2));
-  await bot.handleUpdate(req.body);
-  res.json({ status: 200, body: "" });
+  try {
+    console.log(JSON.stringify(req.body, null, 2));
+    await bot.handleUpdate(req.body);
+    res.json({ status: 200, body: "" });
+  } catch (error) {
+    res.json({ status: 200, body: "" });
+  }
 
   // for local testing
   // res.setHeader("Content-Type", "application/pdf");
