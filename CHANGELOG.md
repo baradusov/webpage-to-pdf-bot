@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.1
+* Fix overflowing images
+* Possible fix of unhandled promise rejection
+
 ## 0.3.0
 * Bot now will reply to message with url
 * Fix code styling in pdf
