@@ -130,7 +130,12 @@ const getPdf = async (message) => {
   try {
     const urls = getUrls(message);
     if (!urls) {
-    await logger("botFailure", message.from.id, message.text, "It doesn't seem to be a link 🤔");
+      await logger(
+        "botFailure",
+        message.from.id,
+        message.text,
+        "It doesn't seem to be a link 🤔"
+      );
 
       return {
         pdf: false,
@@ -141,7 +146,12 @@ const getPdf = async (message) => {
     const url = !urls[0].includes("://") ? `http://${urls[0]}` : urls[0];
     const html = await getReadableContent(url);
     if (!html) {
-      await logger("botFailure", message.from.id, url, "Can't get the content from the link 😞");
+      await logger(
+        "botFailure",
+        message.from.id,
+        url,
+        "Can't get the content from the link 😞"
+      );
 
       return {
         pdf: false,
@@ -151,7 +161,12 @@ const getPdf = async (message) => {
 
     const { pdf, name } = await generatePdf(html);
 
-    await logger("botSuccess", message.from.id, url, urls.length > 1 ? "One link at a time, sorry" : null);
+    await logger(
+      "botSuccess",
+      message.from.id,
+      url,
+      urls.length > 1 ? "One link at a time, sorry" : null
+    );
 
     return {
       pdf,
@@ -188,7 +203,8 @@ bot.on("message", async (ctx) => {
         resolve({
           pdf: false,
           name: "",
-          message: "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
+          message:
+            "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
         }),
       9000
     );
@@ -201,7 +217,10 @@ bot.on("message", async (ctx) => {
       ctx.reply(message);
     }
 
-    return ctx.replyWithDocument({ source: pdf, filename: `${name}.pdf` }, Extra.inReplyTo(ctx.message.message_id));
+    return ctx.replyWithDocument(
+      { source: pdf, filename: `${name}.pdf` },
+      Extra.inReplyTo(ctx.message.message_id)
+    );
   }
 
   console.log(
@@ -220,7 +239,11 @@ const test = async (ctx) => {
 
   const timeout = new Promise((resolve) => {
     setTimeout(
-      () => resolve({ pdf: "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps." }),
+      () =>
+        resolve({
+          pdf:
+            "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
+        }),
       9500
     );
   });
