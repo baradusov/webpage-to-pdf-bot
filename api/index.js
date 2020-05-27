@@ -16,6 +16,7 @@ const PAGE_STYLE = `
   body { font-size: 2em; }
   pre { padding: 20px; background-color: linen; }
   code { font-family: monospace; }
+  img { max-width: 100%; }
 `;
 
 const hasCaptionEntities = (message) => message.caption_entities || null;
