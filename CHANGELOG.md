@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.0
+* Add hindi font support
+* Add botStart log event
+
 ## 0.3.1
 * Fix overflowing images
 * Possible fix of unhandled promise rejection
