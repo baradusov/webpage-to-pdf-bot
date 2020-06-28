@@ -86,6 +86,7 @@ const getReadableContent = async (url) => {
 const generatePdf = async ({ title, content }) => {
   await chrome.font(FONTS.telugu);
   await chrome.font(FONTS.arabic);
+  await chrome.font(FONTS.hindi);
 
   const browser = await puppeteer.launch({
     args: chrome.args,
