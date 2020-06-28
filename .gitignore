@@ -1,3 +1,5 @@
+.vercel
 .now
 now.json
 node_modules/
+.env

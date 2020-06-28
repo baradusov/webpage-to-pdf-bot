@@ -233,29 +233,6 @@ bot.on("message", async (ctx) => {
   return ctx.reply(message);
 });
 
-const test = async (ctx) => {
-  console.log(ctx.message);
-  const pdf = new Promise(async (resolve) => {
-    const content = await getPdf(ctx.message);
-    resolve(content);
-  });
-
-  const timeout = new Promise((resolve) => {
-    setTimeout(
-      () =>
-        resolve({
-          pdf:
-            "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
-        }),
-      9500
-    );
-  });
-
-  const result = await Promise.race([pdf, timeout]);
-
-  return result;
-};
-
 module.exports = async (req, res) => {
   try {
     console.log(JSON.stringify(req.body, null, 2));
@@ -264,10 +241,4 @@ module.exports = async (req, res) => {
   } catch (error) {
     res.json({ status: 200, body: "" });
   }
-
-  // for local testing
-  // res.setHeader("Content-Type", "application/pdf");
-  // const data = await test(req.body);
-  // console.log(data.pdf);
-  // res.end(data.pdf);
 };

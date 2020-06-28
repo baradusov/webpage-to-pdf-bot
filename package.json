@@ -4,6 +4,7 @@
   "description": "Bot can help to save web article as a readable pdf file",
   "main": "index.js",
   "scripts": {
+    "start": "now dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
