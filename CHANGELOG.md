@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.1
+* Fix hindi font support
+
 ## 0.4.0
 * Add hindi font support
 * Add botStart log event
