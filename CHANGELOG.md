@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.3
+* Refactoring for more modular approach
+
 ## 0.4.2
 * Fix start command not sending welcome message
 * Update dependencies
