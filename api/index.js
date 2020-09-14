@@ -190,7 +190,7 @@ const getPdf = async (message) => {
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(async (ctx) => {
-  await logger("botStart", message.from.id, "new user");
+  await logger("botStart", ctx.message.from.id, "new user");
   return ctx.reply("You send me a link, I'll send you a readable pdf file.");
 });
 
