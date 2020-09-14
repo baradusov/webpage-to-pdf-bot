@@ -15,13 +15,14 @@
   "author": "Nuril Baradusov <baradusovnh@gmail.com> (https://baradusov.ru)",
   "license": "ISC",
   "dependencies": {
-    "chrome-aws-lambda": "^2.1.1",
-    "isomorphic-fetch": "^2.2.1",
-    "jsdom": "^16.2.2",
-    "node-fetch": "^2.6.0",
-    "pdf-puppeteer": "^1.1.10",
-    "puppeteer-core": "^2.1.1",
-    "readability": "github:mozilla/readability#master",
-    "telegraf": "^3.36.0"
+    "@mozilla/readability": "^0.3.0",
+    "chrome-aws-lambda": "^5.2.1",
+    "jsdom": "^16.4.0",
+    "node-fetch": "^2.6.1",
+    "puppeteer-core": "^5.3.0",
+    "telegraf": "^3.38.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^5.3.0"
   }
 }

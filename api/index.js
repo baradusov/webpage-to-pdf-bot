@@ -1,7 +1,7 @@
 const Telegraf = require("telegraf");
 const Extra = require("telegraf/extra");
 const { JSDOM } = require("jsdom");
-const Readability = require("readability");
+const { Readability } = require("@mozilla/readability");
 const chrome = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 const logger = require("./_lib/logger");
