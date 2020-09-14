@@ -129,7 +129,7 @@ const generatePdf = async ({ title, content }) => {
   };
 };
 
-const getPdf = async (message) => {
+const handleUserMessage = async (message) => {
   try {
     const urls = getUrls(message);
     if (!urls) {
@@ -196,7 +196,7 @@ bot.start(async (ctx) => {
 
 bot.on("message", async (ctx) => {
   const data = new Promise(async (resolve) => {
-    const { pdf, name, message } = await getPdf(ctx.message);
+    const { pdf, name, message } = await handleUserMessage(ctx.message);
 
     resolve({ pdf, name, message });
   });
