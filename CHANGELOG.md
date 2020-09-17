@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.4
+* Fix logging error message
+* Add repository field to package.json
+
 ## 0.4.3
 * Refactoring for more modular approach
 
