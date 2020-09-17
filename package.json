@@ -14,6 +14,10 @@
   ],
   "author": "Nuril Baradusov <baradusovnh@gmail.com> (https://baradusov.ru)",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/baradusov/webpage-to-pdf-bot.git"
+  },
   "dependencies": {
     "@mozilla/readability": "^0.3.0",
     "chrome-aws-lambda": "^5.2.1",
