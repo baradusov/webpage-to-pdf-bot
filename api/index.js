@@ -25,12 +25,8 @@ bot.entity('url', async (ctx) => {
     );
   }
 
-  await logger(
-    'botFailure',
-    ctx.message.from.id,
-    ctx.message.text,
-    "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps."
-  );
+  await logger('botFailure', ctx.message.from.id, ctx.message.text, message);
+
   return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
 });
 
