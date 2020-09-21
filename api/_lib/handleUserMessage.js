@@ -39,7 +39,12 @@ module.exports = async ({ message }) => {
     };
   } catch (error) {
     console.error(error);
-    await logger('botFailure', message.from.id, 'no link', error);
+    await logger(
+      'botFailure',
+      message.from.id,
+      message.text || 'no link',
+      error
+    );
 
     return {
       pdf: false,
