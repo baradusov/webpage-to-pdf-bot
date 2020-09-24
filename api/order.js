@@ -16,6 +16,8 @@ module.exports = async (req, res) => {
 
       await bot.telegram.sendMessage(
         user,
+        'You just bought 50 PDF generations. See total in /limits.'
+      );
     } else {
       await bot.telegram.sendMessage(
         86907467,
