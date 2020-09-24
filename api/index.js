@@ -9,7 +9,7 @@ bot.start(async (ctx) => {
   return ctx.reply("You send me a link, I'll send you a readable pdf file.");
 });
 
-bot.entity('url', async (ctx) => {
+bot.on('message', async (ctx) => {
   const { pdf, name, message } = await handleTimeout(() =>
     handleUserMessage(ctx)
   );
@@ -28,20 +28,6 @@ bot.entity('url', async (ctx) => {
   await logger('botFailure', ctx.message.from.id, ctx.message.text, message);
 
   return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
-});
-
-bot.on('message', async ({ reply, message }) => {
-  await logger(
-    'botFailure',
-    message.from.id,
-    message.text,
-    "It doesn't seem to be a link 🤔"
-  );
-
-  return reply(
-    "It doesn't seem to be a link 🤔",
-    Extra.inReplyTo(message.message_id)
-  );
 });
 
 module.exports = async (req, res) => {

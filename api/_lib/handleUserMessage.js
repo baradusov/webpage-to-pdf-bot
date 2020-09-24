@@ -6,6 +6,21 @@ const getReadableContent = require('./getReadableContent');
 module.exports = async ({ message }) => {
   try {
     const urls = getUrls(message);
+
+    if (!urls) {
+      await logger(
+        'botFailure',
+        message.from.id,
+        message.text,
+        "It doesn't seem to be a link 🤔"
+      );
+
+      return {
+        pdf: false,
+        message: "It doesn't seem to be a link 🤔",
+      };
+    }
+
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
     const html = await getReadableContent(url);
 
