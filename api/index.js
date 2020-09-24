@@ -21,7 +21,7 @@ bot.command('limits', async (ctx) => {
   return ctx.replyWithMarkdown(BOT_REPLIES.limitsCommand(limits));
 });
 
-bot.entity('url', async (ctx) => {
+bot.on('message', async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
     const { pdf, name, message } = await handleTimeout(() =>
       handleUserMessage(ctx)
@@ -44,13 +44,6 @@ bot.entity('url', async (ctx) => {
   }
 
   return ctx.reply(BOT_REPLIES.limit);
-});
-
-bot.on('message', async ({ reply, message }) => {
-  return reply(
-    "It doesn't seem to be a link 🤔",
-    Extra.inReplyTo(message.message_id)
-  );
 });
 
 module.exports = async (req, res) => {
