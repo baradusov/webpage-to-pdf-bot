@@ -53,12 +53,11 @@ module.exports = async ({ message }) => {
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
     };
   } catch (error) {
-    console.error(error);
     await logger(
       'botFailure',
       message.from.id,
       message.text || 'no link',
-      error
+      error.message
     );
 
     return {
