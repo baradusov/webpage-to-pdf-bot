@@ -1,43 +1,52 @@
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
-const { logger, handleTimeout, handleUserMessage } = require('./_lib');
+const { handleTimeout, handleUserMessage } = require('./_lib');
+const { updateUser, canUseBot, getLimits } = require('./_lib/db');
+const { BOT_REPLIES } = require('./_lib/config');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(async (ctx) => {
-  await logger('botStart', ctx.message.from.id, 'new user');
   return ctx.reply("You send me a link, I'll send you a readable pdf file.");
 });
 
-bot.entity('url', async (ctx) => {
-  const { pdf, name, message } = await handleTimeout(() =>
-    handleUserMessage(ctx)
-  );
+bot.help((ctx) => {
+  return ctx.replyWithMarkdown(BOT_REPLIES.helpCommand, {
+    disable_web_page_preview: true,
+  });
+});
 
-  if (pdf) {
-    if (message) {
-      ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
+bot.command('limits', async (ctx) => {
+  const limits = await getLimits(ctx.chat.id);
+  return ctx.replyWithMarkdown(BOT_REPLIES.limitsCommand(limits));
+});
+
+bot.entity('url', async (ctx) => {
+  if (await canUseBot(ctx.chat.id)) {
+    const { pdf, name, message } = await handleTimeout(() =>
+      handleUserMessage(ctx)
+    );
+
+    if (pdf) {
+      if (message) {
+        ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
+      }
+
+      await updateUser(ctx.chat.id);
+
+      return ctx.replyWithDocument(
+        { source: pdf, filename: `${name}.pdf`, caption: message },
+        Extra.inReplyTo(ctx.message.message_id)
+      );
     }
 
-    return ctx.replyWithDocument(
-      { source: pdf, filename: `${name}.pdf`, caption: message },
-      Extra.inReplyTo(ctx.message.message_id)
-    );
+    return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
   }
 
-  await logger('botFailure', ctx.message.from.id, ctx.message.text, message);
-
-  return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
+  return ctx.reply(BOT_REPLIES.limit);
 });
 
 bot.on('message', async ({ reply, message }) => {
-  await logger(
-    'botFailure',
-    message.from.id,
-    message.text,
-    "It doesn't seem to be a link 🤔"
-  );
-
   return reply(
     "It doesn't seem to be a link 🤔",
     Extra.inReplyTo(message.message_id)
