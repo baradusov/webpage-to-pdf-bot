@@ -21,6 +21,10 @@ bot.command('limits', async (ctx) => {
   return ctx.replyWithMarkdown(BOT_REPLIES.limitsCommand(limits));
 });
 
+bot.command('buy', async (ctx) => {
+  return ctx.replyWithMarkdown(BOT_REPLIES.buyCommand(ctx.chat.id));
+});
+
 bot.on('message', async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
     const { pdf, name, message } = await handleTimeout(() =>
