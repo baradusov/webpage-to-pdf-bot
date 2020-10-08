@@ -23,7 +23,7 @@ Send him a link, it will send back a readable pdf.
 *Limits*
 You have limit in 50 PDFs per day.
 This limitation resets every day at 00:00 GMT+0. You can see how many PDFs you can generate today in /limits.
-Reasons why this limitation exists explained in bot's news channel [@baradusov\_support](https://t.me/baradusov\_support/1).
+Reasons why this limitation exists explained in bot's news channel [@baradusov\_support](https://t.me/baradusov_support/6).
 
 If you have reached the limit you can get 50 PDF generations by pressing /buy command. It will generate an unique link for you.
 
@@ -36,7 +36,7 @@ If you have any questions, suggestions, comments or something not working, feel 
 *Commands*
 /help — shows this message
 /limits — shows your limits
-/buy — generate an unique link to add 50 more PDF generations`,
+/buy — generate an unique link to get 50 more PDF generations`,
   limitsCommand: ({ total, free, paid }) => {
     return `You have left *${total}* PDFs today.\n*${free}* free and *${paid}* paid ones.\n\nThe limitation is *50* free PDFs per day.\nMore info in /help.`;
   },
