@@ -57,8 +57,8 @@ const updateUser = async (id) => {
   if (total > 0) {
     const update = {
       $inc: {
-        'pdf.free': user.pdf.paid > 0 ? 0 : -1,
-        'pdf.paid': user.pdf.paid > 0 ? -1 : 0,
+        'pdf.free': user.pdf.free > 0 ? -1 : 0,
+        'pdf.paid': user.pdf.free > 0 ? 0 : -1,
         'metrics.total': 1,
       },
       $set: {
