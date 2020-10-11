@@ -36,6 +36,7 @@ module.exports = async (req, res) => {
     await bot.handleUpdate(req.body);
     res.json({ status: 200, body: '' });
   } catch (error) {
+    console.log(JSON.stringify(error, null, 2));
     res.json({ status: 200, body: '' });
   }
 };
