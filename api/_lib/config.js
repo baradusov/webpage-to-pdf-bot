@@ -19,6 +19,7 @@ const BOT_REPLIES = {
 *Webpage to PDF bot* can help you to save web article as pdf file.
 
 Send him a link, it will send back a readable pdf.
+Keep in mind that the bot oriented on a text content.
 
 *Limits*
 You have limit in 50 PDFs per day.

@@ -7,7 +7,7 @@ const { BOT_REPLIES } = require('./_lib/config');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(async (ctx) => {
-  return ctx.reply("You send me a link, I'll send you a readable pdf file.");
+  return ctx.reply("You send me a link, I'll send you a readable pdf file. More info in /help.");
 });
 
 bot.help((ctx) => {
