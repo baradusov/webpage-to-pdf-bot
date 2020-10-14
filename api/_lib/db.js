@@ -28,7 +28,7 @@ const connectToDatabase = async (uri) => {
 const setupUser = async (id) => {
   const db = await connectToDatabase(process.env.MONGO_URL);
   const usersCollection = db.collection('users');
-  const user = await usersCollection.findOne({ Number(id) });
+  const user = await usersCollection.findOne({ id: Number(id) });
 
   if (!user) {
     const result = await usersCollection.insertOne({
