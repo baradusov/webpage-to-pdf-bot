@@ -11,7 +11,7 @@ const PAGE_STYLE = `
   body { font-size: 2em; }
   pre { padding: 20px; background-color: linen; }
   code { font-family: monospace; }
-  img { max-width: 100%; }
+  img { max-width: 100%; height: auto; }
 `;
 
 const BOT_REPLIES = {
