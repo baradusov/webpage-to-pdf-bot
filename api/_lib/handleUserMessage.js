@@ -31,7 +31,7 @@ module.exports = async ({ message }) => {
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
     };
   } catch (error) {
-    console.error(error);
+    console.error('ERROR', error);
 
     return {
       pdf: false,
