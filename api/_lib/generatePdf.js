@@ -3,18 +3,23 @@ const puppeteer = require('puppeteer-core');
 const { FONTS, PAGE_STYLE } = require('./config');
 
 module.exports = async ({ title, content }) => {
-  await chrome.font(FONTS.telugu);
-  await chrome.font(FONTS.arabic);
-  await chrome.font(FONTS.hindi);
+  let browser = null;
 
-  const browser = await puppeteer.launch({
-    args: chrome.args,
-    executablePath: await chrome.executablePath,
-    headless: chrome.headless,
-  });
-  const page = await browser.newPage();
+  try {
+    await chrome.font(FONTS.telugu);
+    await chrome.font(FONTS.arabic);
+    await chrome.font(FONTS.hindi);
 
-  await page.setContent(`
+    browser = await puppeteer.launch({
+      args: chrome.args,
+      defaultViewport: puppeteer.defaultViewport,
+      executablePath: await chrome.executablePath,
+      headless: chrome.headless,
+      ignoreHTTPSErrors: true,
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(`
   <!doctype html>
   <html lang=en>
   <head>
@@ -27,23 +32,27 @@ module.exports = async ({ title, content }) => {
   </body>
   </html>
   `);
-  await page.addStyleTag({ content: PAGE_STYLE });
+    await page.addStyleTag({ content: PAGE_STYLE });
 
-  const buffer = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-    margin: {
-      top: '20px',
-      bottom: '20px',
-      left: '20px',
-      right: '20px',
-    },
-  });
+    const buffer = await page.pdf({
+      format: 'A4',
+      margin: {
+        top: '20px',
+        bottom: '20px',
+        left: '20px',
+        right: '20px',
+      },
+    });
 
-  await browser.close();
-
-  return {
-    name: title,
-    pdf: buffer,
-  };
+    return {
+      name: title,
+      pdf: buffer,
+    };
+  } catch (error) {
+    throw "Can't generate pdf, the page is too big 😞";
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
+  }
 };
