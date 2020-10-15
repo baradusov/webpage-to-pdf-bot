@@ -46,6 +46,13 @@ bot.on('message', async (ctx) => {
       );
     }
 
+    if (message.includes('goes wrong')) {
+      ctx.reply(
+        'бот сломался! перезагрузи на https://vercel.com/baradusov/webpage-to-pdf-bot!',
+        Extra.inReplyTo(86907467)
+      );
+    }
+
     return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
   }
 

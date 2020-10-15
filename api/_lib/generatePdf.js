@@ -49,7 +49,7 @@ module.exports = async ({ title, content }) => {
       pdf: buffer,
     };
   } catch (error) {
-    throw "Can't generate pdf, the page is too big 😞";
+    throw 'Something goes wrong and the bot is not working now 😞.\n@baradusov already know this and soon will fix it.\nTry again later.\n\nOr if you already tried and the bot still not working, message @baradusov, please.';
   } finally {
     if (browser !== null) {
       await browser.close();
