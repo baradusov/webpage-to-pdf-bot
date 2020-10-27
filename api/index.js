@@ -1,7 +1,7 @@
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleTimeout, handleUserMessage } = require('./_lib');
-const { updateUser, canUseBot, getLimits } = require('./_lib/db');
+const { updateUser, canUseBot, getLimits, saveFile } = require('./_lib/db');
 const { BOT_REPLIES } = require('./_lib/config');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -40,10 +40,14 @@ bot.on('message', async (ctx) => {
 
       await updateUser(ctx.chat.id);
 
-      return ctx.replyWithDocument(
+      const reply = await ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
         Extra.inReplyTo(ctx.message.message_id)
       );
+
+      saveFile({ userId: reply.chat.id, id: reply.document.file_id });
+
+      return reply;
     }
 
     if (message.includes('goes wrong')) {

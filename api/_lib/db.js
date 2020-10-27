@@ -14,7 +14,10 @@ const connectToDatabase = async (uri) => {
   }
 
   // If no connection is cached, create a new one
-  const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  const client = await MongoClient.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
   // Select the database through the connection,
   // using the database path of the connection string
@@ -122,10 +125,24 @@ const addPaidPdfs = async (id) => {
   return result;
 };
 
+const saveFile = async ({ id, userId }) => {
+  const db = await connectToDatabase(process.env.MONGO_URL);
+  const filesCollection = db.collection('files');
+
+  const result = await filesCollection.insertOne({
+    id: id,
+    userId: Number(userId),
+    createdAt: Date.now(),
+  });
+
+  return result.ops[0];
+};
+
 module.exports = {
   setupUser,
   updateUser,
   canUseBot,
   getLimits,
   addPaidPdfs,
+  saveFile,
 };
