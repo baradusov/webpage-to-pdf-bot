@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.5.0
+* Add support for bengali language
+* Change font fetching to parallel with .allSettled
+* Migrate from now to vercel
+
 ## 0.4.5
 * Fix logging error message
 * Fix processing forwarded message
