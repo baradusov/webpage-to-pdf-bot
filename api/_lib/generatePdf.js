@@ -7,6 +7,7 @@ module.exports = async ({ title, content }) => {
     chrome.font(FONTS.telugu),
     chrome.font(FONTS.arabic),
     chrome.font(FONTS.hindi),
+    chrome.font(FONTS.bengali),
   ]);
 
   const browser = await puppeteer.launch({
