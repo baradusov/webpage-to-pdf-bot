@@ -3,9 +3,11 @@ const puppeteer = require('puppeteer-core');
 const { FONTS, PAGE_STYLE } = require('./config');
 
 module.exports = async ({ title, content }) => {
-  await chrome.font(FONTS.telugu);
-  await chrome.font(FONTS.arabic);
-  await chrome.font(FONTS.hindi);
+  Promise.allSettled([
+    chrome.font(FONTS.telugu),
+    chrome.font(FONTS.arabic),
+    chrome.font(FONTS.hindi),
+  ]);
 
   const browser = await puppeteer.launch({
     args: chrome.args,
