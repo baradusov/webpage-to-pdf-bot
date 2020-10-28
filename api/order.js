@@ -1,5 +1,6 @@
 const Telegraf = require('telegraf');
-const { addPaidPdfs } = require('./_lib/db');
+const { BOT_REPLIES } = require('./_lib/config');
+const { saveOrder } = require('./_lib/db');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -10,18 +11,15 @@ module.exports = async (req, res) => {
     console.log(JSON.stringify(req.body, null, 2));
 
     if (order.product_id === 'Hh9ctvcL4koxPlJFzDnCIw==' && user) {
-      const result = await addPaidPdfs(user);
-
-      console.log(result);
-
-      await bot.telegram.sendMessage(
-        user,
-        'You just bought 50 PDF generations. See total in /limits.'
-      );
+      await saveOrder(order);
+      await bot.telegram.sendMessage(user, BOT_REPLIES.thankMessage);
     } else {
+      await saveOrder(order);
       await bot.telegram.sendMessage(
         86907467,
-        `у кого-то чёт не так с покупкой! ${JSON.stringify(req.body, null, 2)}`
+        `Кто-то задонатил без userId:
+
+        ${JSON.stringify(req.body, null, 2)}`
       );
     }
 

@@ -14,7 +14,10 @@ const connectToDatabase = async (uri) => {
   }
 
   // If no connection is cached, create a new one
-  const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  const client = await MongoClient.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
   // Select the database through the connection,
   // using the database path of the connection string
@@ -33,7 +36,6 @@ const setupUser = async (id) => {
   if (!user) {
     const result = await usersCollection.insertOne({
       id: Number(id),
-      pdf: { free: 50, paid: 0 },
       status: 'active',
       metrics: {
         total: 0,
@@ -51,81 +53,44 @@ const setupUser = async (id) => {
 const updateUser = async (id) => {
   const db = await connectToDatabase(process.env.MONGO_URL);
   const usersCollection = db.collection('users');
-  const user = await setupUser(id);
-  const total = user.pdf.free + user.pdf.paid;
-
-  if (total > 0) {
-    const update = {
-      $inc: {
-        'pdf.free': user.pdf.free > 0 ? -1 : 0,
-        'pdf.paid': user.pdf.free > 0 ? 0 : -1,
-        'metrics.total': 1,
-      },
-      $set: {
-        lastActivityAt: Date.now(),
-      },
-    };
-
-    const result = await usersCollection.findOneAndUpdate(
-      {
-        id: Number(id),
-      },
-      update,
-      { returnOriginal: false }
-    );
-
-    return result.value;
-  }
-
-  return false;
-};
-
-const canUseBot = async (id) => {
-  const user = await setupUser(id);
-  const total = user.pdf.free + user.pdf.paid;
-
-  if (total <= 0) {
-    return false;
-  }
-
-  return true;
-};
-
-const getLimits = async (id) => {
-  const user = await setupUser(id);
-  const total = user.pdf.free + user.pdf.paid;
-
-  return {
-    total,
-    free: user.pdf.free,
-    paid: user.pdf.paid,
-  };
-};
-
-const addPaidPdfs = async (id) => {
-  const db = await connectToDatabase(process.env.MONGO_URL);
-  const usersCollection = db.collection('users');
   await setupUser(id);
+
+  const update = {
+    $inc: {
+      'metrics.total': 1,
+    },
+    $set: {
+      lastActivityAt: Date.now(),
+    },
+  };
 
   const result = await usersCollection.findOneAndUpdate(
     {
       id: Number(id),
     },
-    {
-      $inc: {
-        'pdf.paid': 50,
-      },
-    },
+    update,
     { returnOriginal: false }
   );
 
-  return result;
+  return result.value;
+};
+
+const canUseBot = async (id) => {
+  return true;
+};
+
+const saveOrder = async (order) => {
+  const db = await connectToDatabase(process.env.MONGO_URL);
+  const ordersCollection = db.collection('orders');
+  const userId = order['url_params[your_telegram_id]'];
+  const result = await ordersCollection.insertOne({ userId, ...order });
+
+  return result.ops[0];
 };
 
 module.exports = {
   setupUser,
   updateUser,
   canUseBot,
-  getLimits,
-  addPaidPdfs,
+  saveOrder,
 };

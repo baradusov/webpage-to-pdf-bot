@@ -1,15 +1,13 @@
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleTimeout, handleUserMessage } = require('./_lib');
-const { updateUser, canUseBot, getLimits } = require('./_lib/db');
+const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES } = require('./_lib/config');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.start(async (ctx) => {
-  return ctx.reply(
-    "You send me a link, I'll send you a readable pdf file. More info in /help."
-  );
+  return ctx.reply(BOT_REPLIES.startCommand);
 });
 
 bot.help((ctx) => {
@@ -18,13 +16,10 @@ bot.help((ctx) => {
   });
 });
 
-bot.command('limits', async (ctx) => {
-  const limits = await getLimits(ctx.chat.id);
-  return ctx.replyWithMarkdown(BOT_REPLIES.limitsCommand(limits));
-});
-
-bot.command('buy', async (ctx) => {
-  return ctx.replyWithMarkdown(BOT_REPLIES.buyCommand(ctx.chat.id));
+bot.command('support', async (ctx) => {
+  return ctx.replyWithMarkdown(BOT_REPLIES.supportCommand(ctx.chat.id), {
+    disable_web_page_preview: true,
+  });
 });
 
 bot.on('message', async (ctx) => {

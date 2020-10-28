@@ -15,20 +15,17 @@ const PAGE_STYLE = `
 `;
 
 const BOT_REPLIES = {
+  startCommand:
+    "You send me a link, I'll send you a readable pdf file. More info in /help.",
   helpCommand: `
 *Webpage to PDF bot* can help you to save web article as pdf file.
 
-Send him a link, it will send back a readable pdf.
-Keep in mind that the bot oriented on a text content.
+Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
 
-*Limits*
-You have limit in 50 PDFs per day.
-This limitation resets every day at 00:00 GMT+0. You can see how many PDFs you can generate today in /limits.
-Reasons why this limitation exists explained in bot's news channel [@baradusov\_support](https://t.me/baradusov_support/6).
+*Support*
+You can support the bot by pressing /support command. It will generate an unique link for you.
 
-If you have reached the limit you can get 50 PDF generations by pressing /buy command. It will generate an unique link for you.
-
-*Updates about bot*
+*Updates about the bot*
 You can read all about the new updates in the bot's news channnel [@baradusov\_support](https://t.me/baradusov\_support).
 
 *Contacts*
@@ -36,16 +33,16 @@ If you have any questions, suggestions, comments or something not working, feel 
 
 *Commands*
 /help — shows this message
-/limits — shows your limits
-/buy — generate an unique link to get 50 more PDF generations`,
+/support — get an unique link to support the bot`,
   limitsCommand: ({ total, free, paid }) => {
     return `You have left *${total}* PDFs today.\n*${free}* free and *${paid}* paid ones.\n\nThe limitation is *50* free PDFs per day.\nMore info in /help.`;
   },
-  limit:
-    "You've reached your limit for today. More information about the limitation in /help.",
-  buyCommand: (id) => {
-    return `[Payment link](https://gumroad.com/l/webpage-to-pdf-50-pack?your_telegram_id=${id})`;
+  supportCommand: (id) => {
+    return `[Support the bot on Gumroad](https://gum.co/support-webpage-to-pdf-bot?your_telegram_id=${id})`;
   },
+  thankMessage: 'Thank you for supporting the bot!',
+  limit:
+    "For some reason you can't use the bot. Message @baradusov for more info.",
 };
 
 module.exports = {
