@@ -1,7 +1,7 @@
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleTimeout, handleUserMessage } = require('./_lib');
-const { updateUser, canUseBot, saveFile } = require('./_lib/db');
+const { updateUser, canUseBot, saveFile, hasDashboard } = require('./_lib/db');
 const { BOT_REPLIES } = require('./_lib/config');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -40,7 +40,9 @@ bot.on('message', async (ctx) => {
         Extra.inReplyTo(ctx.message.message_id)
       );
 
-      saveFile({ userId: reply.chat.id, id: reply.document.file_id });
+      if (await hasDashboard(ctx.chat.id)) {
+        saveFile({ name, reply, url });
+      }
 
       return reply;
     }

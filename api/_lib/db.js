@@ -1,4 +1,5 @@
 const url = require('url');
+const { nanoid } = require('nanoid');
 const MongoClient = require('mongodb').MongoClient;
 
 // Create cached connection variable
@@ -37,6 +38,10 @@ const setupUser = async (id) => {
     const result = await usersCollection.insertOne({
       id: Number(id),
       status: 'active',
+      dashboard: {
+        active: false,
+        url: nanoid(),
+      },
       metrics: {
         total: 0,
       },
@@ -101,10 +106,16 @@ const saveFile = async ({ id, userId }) => {
   return result.ops[0];
 };
 
+const hasDashboard = async (id) => {
+  const user = await setupUser(id);
+  return user.dashboard.active;
+};
+
 module.exports = {
   setupUser,
   updateUser,
   canUseBot,
   saveFile,
   saveOrder,
+  hasDashboard,
 };
