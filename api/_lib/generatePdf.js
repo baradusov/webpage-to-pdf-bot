@@ -49,7 +49,7 @@ module.exports = async ({ title, content }) => {
       pdf: buffer,
     };
   } catch (error) {
-    throw 'Something goes wrong and the bot is not working now 😞.\n@baradusov already know this and soon will fix it.\nTry again later.\n\nOr if you already tried and the bot still not working, message @baradusov, please.';
+    throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
   } finally {
     if (browser !== null) {
       await browser.close();
