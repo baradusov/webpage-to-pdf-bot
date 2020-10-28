@@ -24,7 +24,7 @@ bot.command('support', async (ctx) => {
 
 bot.on('message', async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
-    const { pdf, name, message } = await handleTimeout(() =>
+    const { pdf, name, message, url } = await handleTimeout(() =>
       handleUserMessage(ctx)
     );
 

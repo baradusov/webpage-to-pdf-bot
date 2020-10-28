@@ -93,13 +93,19 @@ const saveOrder = async (order) => {
   return result.ops[0];
 };
 
-const saveFile = async ({ id, userId }) => {
+const saveFile = async (message) => {
+  const document = message.reply.document;
   const db = await connectToDatabase(process.env.MONGO_URL);
   const filesCollection = db.collection('files');
 
   const result = await filesCollection.insertOne({
-    id: id,
-    userId: Number(userId),
+    fileName: document.file_name,
+    shortFilename: message.name,
+    url: message.url,
+    fileId: document.file_id,
+    fileUniqueId: document.file_unique_id,
+    fileSize: document.file_size,
+    userId: message.reply.chat.id,
     createdAt: Date.now(),
   });
 

@@ -15,7 +15,5 @@ module.exports = async (handler) => {
     );
   });
 
-  const { pdf, name, message } = await Promise.race([data, timeout]);
-
-  return { pdf, name, message };
+  return await Promise.race([data, timeout]);
 };

@@ -26,6 +26,7 @@ module.exports = async ({ message }) => {
     const { pdf, name } = await generatePdf(html);
 
     return {
+      url,
       pdf,
       name,
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
