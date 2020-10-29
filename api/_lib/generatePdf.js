@@ -6,9 +6,12 @@ module.exports = async ({ title, content }) => {
   let browser = null;
 
   try {
-    await chrome.font(FONTS.telugu);
-    await chrome.font(FONTS.arabic);
-    await chrome.font(FONTS.hindi);
+    Promise.allSettled([
+      chrome.font(FONTS.telugu),
+      chrome.font(FONTS.arabic),
+      chrome.font(FONTS.hindi),
+      chrome.font(FONTS.bengali),
+    ]);
 
     browser = await puppeteer.launch({
       args: chrome.args,
