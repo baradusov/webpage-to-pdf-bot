@@ -1,6 +1,15 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.6.0
+* Rewrite the bot to be more extensible for future updates
+* Connected database for storing user profiles and preferences for future
+* Added help text (/help command)
+* Added ability to support the bot with /support command
+* Bot will send message to admin now if it's down
+* Removed logging to airtable
+* Created telegram channel for updates
+
 ## 0.5.0
 * Add support for bengali language
 * Change font fetching to parallel with .allSettled
