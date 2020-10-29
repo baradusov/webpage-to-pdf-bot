@@ -3,21 +3,26 @@ const puppeteer = require('puppeteer-core');
 const { FONTS, PAGE_STYLE } = require('./config');
 
 module.exports = async ({ title, content }) => {
-  Promise.allSettled([
-    chrome.font(FONTS.telugu),
-    chrome.font(FONTS.arabic),
-    chrome.font(FONTS.hindi),
-    chrome.font(FONTS.bengali),
-  ]);
+  let browser = null;
 
-  const browser = await puppeteer.launch({
-    args: chrome.args,
-    executablePath: await chrome.executablePath,
-    headless: chrome.headless,
-  });
-  const page = await browser.newPage();
+  try {
+    Promise.allSettled([
+      chrome.font(FONTS.telugu),
+      chrome.font(FONTS.arabic),
+      chrome.font(FONTS.hindi),
+      chrome.font(FONTS.bengali),
+    ]);
 
-  await page.setContent(`
+    browser = await puppeteer.launch({
+      args: chrome.args,
+      defaultViewport: puppeteer.defaultViewport,
+      executablePath: await chrome.executablePath,
+      headless: chrome.headless,
+      ignoreHTTPSErrors: true,
+    });
+    const page = await browser.newPage();
+
+    await page.setContent(`
   <!doctype html>
   <html lang=en>
   <head>
@@ -30,23 +35,27 @@ module.exports = async ({ title, content }) => {
   </body>
   </html>
   `);
-  await page.addStyleTag({ content: PAGE_STYLE });
+    await page.addStyleTag({ content: PAGE_STYLE });
 
-  const buffer = await page.pdf({
-    format: 'A4',
-    printBackground: true,
-    margin: {
-      top: '20px',
-      bottom: '20px',
-      left: '20px',
-      right: '20px',
-    },
-  });
+    const buffer = await page.pdf({
+      format: 'A4',
+      margin: {
+        top: '20px',
+        bottom: '20px',
+        left: '20px',
+        right: '20px',
+      },
+    });
 
-  await browser.close();
-
-  return {
-    name: title,
-    pdf: buffer,
-  };
+    return {
+      name: title,
+      pdf: buffer,
+    };
+  } catch (error) {
+    throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
+  }
 };
