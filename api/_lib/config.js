@@ -34,9 +34,6 @@ If you have any questions, suggestions, comments or something not working, feel 
 *Commands*
 /help — shows this message
 /support — get an unique link to support the bot`,
-  limitsCommand: ({ total, free, paid }) => {
-    return `You have left *${total}* PDFs today.\n*${free}* free and *${paid}* paid ones.\n\nThe limitation is *50* free PDFs per day.\nMore info in /help.`;
-  },
   supportCommand: (id) => {
     return `[Support the bot on Gumroad](https://gum.co/support-webpage-to-pdf-bot?your_telegram_id=${id})`;
   },
