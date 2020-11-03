@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.7.0
+* Added source url at end of file
+* Added chat action when sending file
+
 ## 0.6.0
 * Rewrite the bot to be more extensible for future updates
 * Connected database for storing user profiles and preferences for future
