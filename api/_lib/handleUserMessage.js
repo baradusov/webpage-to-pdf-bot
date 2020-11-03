@@ -23,7 +23,7 @@ module.exports = async ({ message }) => {
       };
     }
 
-    const { pdf, name } = await generatePdf(html);
+    const { pdf, name } = await generatePdf(html, url);
 
     return {
       pdf,

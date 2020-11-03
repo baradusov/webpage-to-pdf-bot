@@ -2,7 +2,7 @@ const chrome = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
 const { FONTS, PAGE_STYLE } = require('./config');
 
-module.exports = async ({ title, content }) => {
+module.exports = async ({ title, content }, source) => {
   let browser = null;
 
   try {
@@ -32,6 +32,9 @@ module.exports = async ({ title, content }) => {
   <body>
   <h1>${title}</h1>
   ${content}
+  <footer>
+  <a class="source" href="${source}">${source}</a>
+  </footer>
   </body>
   </html>
   `);
