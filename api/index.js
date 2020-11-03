@@ -33,6 +33,8 @@ bot.on('message', async (ctx) => {
         ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
       }
 
+      ctx.replyWithChatAction('upload_document');
+
       await updateUser(ctx.chat.id);
 
       return ctx.replyWithDocument(
