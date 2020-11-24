@@ -2,7 +2,7 @@ const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleTimeout, handleUserMessage } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
-const { BOT_REPLIES } = require('./_lib/config');
+const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -22,7 +22,7 @@ bot.command('support', async (ctx) => {
   });
 });
 
-bot.on('message', async (ctx) => {
+bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
     const { pdf, name, message } = await handleTimeout(() =>
       handleUserMessage(ctx)

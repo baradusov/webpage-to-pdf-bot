@@ -1,3 +1,18 @@
+const ALLOWED_UPDATES = [
+  'text',
+  'audio',
+  'dice',
+  'document',
+  'photo',
+  'sticker',
+  'video',
+  'voice',
+  'contact',
+  'location',
+  'venue',
+  'forward',
+];
+
 const FONTS = {
   telugu:
     'https://rawcdn.githack.com/googlefonts/noto-fonts/115d38430d957d38307457c036302b7bdbe0bbc4/unhinted/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
@@ -14,6 +29,7 @@ const PAGE_STYLE = `
   pre { padding: 20px; background-color: linen; }
   code { font-family: monospace; }
   img { max-width: 100%; height: auto; }
+  footer { margin-top: 20px; }
 `;
 
 const BOT_REPLIES = {
@@ -48,4 +64,5 @@ module.exports = {
   FONTS,
   PAGE_STYLE,
   BOT_REPLIES,
+  ALLOWED_UPDATES,
 };
