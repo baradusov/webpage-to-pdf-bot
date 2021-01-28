@@ -1,25 +1,11 @@
-const chrome = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const { FONTS, PAGE_STYLE } = require('./config');
 
 module.exports = async ({ title, content }, source) => {
   let browser = null;
 
   try {
-    Promise.allSettled([
-      chrome.font(FONTS.telugu),
-      chrome.font(FONTS.arabic),
-      chrome.font(FONTS.hindi),
-      chrome.font(FONTS.bengali),
-    ]);
-
-    browser = await puppeteer.launch({
-      args: chrome.args,
-      defaultViewport: puppeteer.defaultViewport,
-      executablePath: await chrome.executablePath,
-      headless: chrome.headless,
-      ignoreHTTPSErrors: true,
-    });
+    browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     await page.setContent(`
