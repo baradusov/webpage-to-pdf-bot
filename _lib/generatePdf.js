@@ -5,7 +5,10 @@ module.exports = async ({ title, content }, source) => {
   let browser = null;
 
   try {
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox'],
+    });
     const page = await browser.newPage();
 
     await page.setContent(`
