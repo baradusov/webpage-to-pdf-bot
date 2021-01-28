@@ -1,3 +1,4 @@
+const { send, json } = require('micro');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleTimeout, handleUserMessage } = require('./_lib');
@@ -24,9 +25,7 @@ bot.command('support', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
-    const { pdf, name, message } = await handleTimeout(() =>
-      handleUserMessage(ctx)
-    );
+    const { pdf, name, message } = await handleUserMessage(ctx);
 
     if (pdf) {
       if (message) {
@@ -58,11 +57,12 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
 module.exports = async (req, res) => {
   try {
-    console.log(JSON.stringify(req.body, null, 2));
-    await bot.handleUpdate(req.body);
-    res.status(200).send('ok');
+    const data = await json(req);
+    console.log(JSON.stringify(data, null, 2));
+    await bot.handleUpdate(data);
+    send(res, 200, 'ok');
   } catch (error) {
     console.log('################', error);
-    res.status(200).send('ok');
+    send(res, 200, 'ok');
   }
 };
