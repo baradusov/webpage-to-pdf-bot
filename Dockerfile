@@ -1,5 +1,7 @@
 FROM node:12.20.1
-    
+
+WORKDIR /app
+
 RUN  apt-get update \
      && apt-get install -y wget gnupg ca-certificates \
      && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -15,6 +17,8 @@ RUN  apt-get update \
      && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
      && chmod +x /usr/sbin/wait-for-it.sh
 
-# Install Puppeteer under /node_modules so it's available system-wide
-ADD package.json package-lock.json /
+COPY ["package.json", "package-lock.json*", "./"]
+
 RUN npm install
+
+COPY . .
