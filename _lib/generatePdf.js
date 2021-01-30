@@ -7,7 +7,7 @@ module.exports = async ({ title, content }, source) => {
   try {
     browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox'],
+      args: ['--no-sandbox', '--single-process', '--no-zygote'],
     });
     const page = await browser.newPage();
 
