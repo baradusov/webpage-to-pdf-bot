@@ -1,7 +1,7 @@
 const { send, json } = require('micro');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
-const { handleTimeout, handleUserMessage } = require('./_lib');
+const { handleUserMessage } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
 
