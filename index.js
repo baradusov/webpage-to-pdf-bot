@@ -50,10 +50,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (message.includes('goes wrong')) {
-      ctx.telegram.sendMessage(
-        86907467,
-        'бот сломался! перезагрузи на https://vercel.com/baradusov/webpage-to-pdf-bot!'
-      );
+      ctx.telegram.sendMessage(86907467, message);
     }
 
     return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
