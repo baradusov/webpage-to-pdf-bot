@@ -1,4 +1,6 @@
-const { send, json } = require('micro');
+require('dotenv').config();
+
+const express = require('express');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const { handleUserMessage } = require('./_lib');
@@ -60,14 +62,17 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
-module.exports = async (req, res) => {
+const expressApp = express();
+expressApp.use(bot.webhookCallback('/api'));
+
+expressApp.get('/', async (req, res) => {
   try {
-    const data = await json(req);
-    console.log(JSON.stringify(data, null, 2));
-    await bot.handleUpdate(data);
-    send(res, 200, 'ok');
+    res.status(200).send('ok');
   } catch (error) {
-    console.log('################', error);
-    send(res, 200, 'ok');
+    res.status(200).send('nook');
   }
-};
+});
+
+expressApp.listen(3333, () => {
+  console.log('Example app listening on port 3333!');
+});
