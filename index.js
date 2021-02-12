@@ -62,12 +62,12 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 const expressApp = express();
 expressApp.use(bot.webhookCallback('/api'));
 
-expressApp.get('/', async (req, res) => {
-  try {
-    res.status(200).send('ok');
-  } catch (error) {
-    res.status(200).send('nook');
-  }
+expressApp.get('/', (req, res) => {
+  res.status(200).send('ok');
+});
+
+expressApp.all('/api', (req, res) => {
+  res.status(200).send('ok');
 });
 
 expressApp.listen(3333, () => {
