@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const { FONTS, PAGE_STYLE } = require('./config');
+const { PAGE_STYLE } = require('./config');
 
 module.exports = async ({ title, content }, source) => {
   let browser = null;

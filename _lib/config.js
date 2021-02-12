@@ -13,17 +13,6 @@ const ALLOWED_UPDATES = [
   'forward',
 ];
 
-const FONTS = {
-  telugu:
-    'https://rawcdn.githack.com/googlefonts/noto-fonts/115d38430d957d38307457c036302b7bdbe0bbc4/unhinted/NotoSansTelugu/NotoSansTelugu-Regular.ttf',
-  arabic:
-    'https://rawcdn.githack.com/googlefonts/noto-fonts/115d38430d957d38307457c036302b7bdbe0bbc4/unhinted/NotoSansArabic/NotoSansArabic-Regular.ttf',
-  hindi:
-    'https://rawcdn.githack.com/googlefonts/noto-fonts/0723a5939124d6be880d5b8eb4666761bab4235e/unhinted/NotoSerifDevanagari/NotoSerifDevanagari-Regular.ttf',
-  bengali:
-    'https://rawcdn.githack.com/googlefonts/noto-fonts/217c9092aaa85ae6127539a904898d423410f485/unhinted/ttf/NotoSansBengali/NotoSansBengali-Regular.ttf',
-};
-
 const PAGE_STYLE = `
   body { font-size: 2em; }
   pre { padding: 20px; background-color: linen; }
@@ -61,7 +50,6 @@ If you have any questions, suggestions, comments or something not working, feel 
 };
 
 module.exports = {
-  FONTS,
   PAGE_STYLE,
   BOT_REPLIES,
   ALLOWED_UPDATES,
