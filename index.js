@@ -5,7 +5,12 @@ const { handleTimeout, handleUserMessage } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const BOT_TOKEN =
+  process.env.NODE_ENV == 'development'
+    ? process.env.BOT_TOKEN_DEV
+    : process.env.BOT_TOKEN;
+
+const bot = new Telegraf(BOT_TOKEN);
 
 bot.start(async (ctx) => {
   return ctx.reply(BOT_REPLIES.startCommand);
