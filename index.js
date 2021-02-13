@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
+const order = require('./routes/order');
 const { handleUserMessage } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
@@ -60,6 +61,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 });
 
 const expressApp = express();
+const bodyParser = express.urlencoded({ extended: true });
 expressApp.use(bot.webhookCallback('/api'));
 
 expressApp.get('/', (req, res) => {
@@ -69,6 +71,8 @@ expressApp.get('/', (req, res) => {
 expressApp.all('/api', (req, res) => {
   res.status(200).send('ok');
 });
+
+expressApp.post('/order', bodyParser, order);
 
 expressApp.listen(3333, () => {
   console.log('Example app listening on port 3333!');
