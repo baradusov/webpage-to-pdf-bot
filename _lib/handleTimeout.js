@@ -11,7 +11,7 @@ module.exports = async (handler) => {
           message:
             "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
         }),
-      8700
+      15000
     );
   });
 

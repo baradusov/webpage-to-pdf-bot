@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - express-to-express
+      - master
 
 jobs:
   deploy:
@@ -18,6 +18,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd /var/www/pdf.baradusov.ru/app/
-          git pull origin express-to-express
+          git pull origin master
           npm install --production
-          sudo -u nodejs pm2 restart bot
+          sudo -u nodejs pm2 restart ../pm2-config/ecosystem.config.js --env production

@@ -1,10 +1,18 @@
+require('dotenv').config();
+
+const express = require('express');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
-const { handleTimeout, handleUserMessage } = require('./_lib');
+const { handleUserMessage } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const BOT_TOKEN =
+  process.env.NODE_ENV == 'development'
+    ? process.env.BOT_TOKEN_DEV
+    : process.env.BOT_TOKEN;
+
+const bot = new Telegraf(BOT_TOKEN);
 
 bot.start(async (ctx) => {
   return ctx.reply(BOT_REPLIES.startCommand);
@@ -24,9 +32,7 @@ bot.command('support', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
-    const { pdf, name, message } = await handleTimeout(() =>
-      handleUserMessage(ctx)
-    );
+    const { pdf, name, message } = await handleUserMessage(ctx);
 
     if (pdf) {
       if (message) {
@@ -44,10 +50,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (message.includes('goes wrong')) {
-      ctx.telegram.sendMessage(
-        86907467,
-        'бот сломался! перезагрузи на https://vercel.com/baradusov/webpage-to-pdf-bot!'
-      );
+      ctx.telegram.sendMessage(86907467, message);
     }
 
     return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
@@ -56,13 +59,17 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
-module.exports = async (req, res) => {
-  try {
-    console.log(JSON.stringify(req.body, null, 2));
-    await bot.handleUpdate(req.body);
-    res.status(200).send('ok');
-  } catch (error) {
-    console.log('################', error);
-    res.status(200).send('ok');
-  }
-};
+const expressApp = express();
+expressApp.use(bot.webhookCallback('/api'));
+
+expressApp.get('/', (req, res) => {
+  res.status(200).send('ok');
+});
+
+expressApp.all('/api', (req, res) => {
+  res.status(200).send('ok');
+});
+
+expressApp.listen(3333, () => {
+  console.log('Example app listening on port 3333!');
+});
