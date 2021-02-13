@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.0
+* Migrated from Vercel to Express
+* Added support for new languages with help of Noto Fonts
+* Replaced chrome-aws with puppeteer
+
 ## 0.7.2
 * Updated dependencies
 
