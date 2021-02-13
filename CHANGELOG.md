@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.1
+* Updated package-lock.json
+
 ## 0.8.0
 * Migrated from Vercel to Express
 * Added support for new languages with help of Noto Fonts
