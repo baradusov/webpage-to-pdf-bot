@@ -1,6 +1,6 @@
 {
   "name": "webpage-to-pdf-bot",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Bot can help to save web article as a readable pdf file",
   "main": "index.js",
   "scripts": {
@@ -19,13 +19,13 @@
     "url": "https://github.com/baradusov/webpage-to-pdf-bot.git"
   },
   "dependencies": {
-    "@mozilla/readability": "^0.4.0",
+    "@mozilla/readability": "^0.4.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsdom": "^16.4.0",
-    "mongodb": "^3.6.3",
+    "mongodb": "^3.6.4",
     "node-fetch": "^2.6.1",
-    "puppeteer": "^5.5.0",
+    "puppeteer": "^7.1.0",
     "telegraf": "^3.38.0"
   }
 }
