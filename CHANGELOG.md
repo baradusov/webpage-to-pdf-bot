@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.4
+* Changed `npm install` to `npm ci` for prod deployment
+
 ## 0.8.3
 * Updated dependencies
 
