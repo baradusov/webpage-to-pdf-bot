@@ -11,7 +11,8 @@ module.exports = async ({ title, content }, source) => {
     });
     const page = await browser.newPage();
 
-    await page.setContent(`
+    await page.setContent(
+      `
   <!doctype html>
   <html lang=en>
   <head>
@@ -26,7 +27,9 @@ module.exports = async ({ title, content }, source) => {
   </footer>
   </body>
   </html>
-  `);
+  `,
+      { waitUntil: 'networkidle0' }
+    );
     await page.addStyleTag({ content: PAGE_STYLE });
 
     const buffer = await page.pdf({
