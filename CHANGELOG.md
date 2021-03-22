@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.5
+* Fixed network timeout error
+* Changed message to admin
+* Updated dependencies
+
 ## 0.8.4
 * Changed `npm install` to `npm ci` for prod deployment
 
