@@ -51,7 +51,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (message.includes('goes wrong')) {
-      ctx.telegram.sendMessage(86907467, message);
+      ctx.telegram.sendMessage(86907467, 'Check me, maybe I\'m down.');
     }
 
     return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
@@ -75,5 +75,5 @@ expressApp.all('/api', (req, res) => {
 expressApp.post('/order', bodyParser, order);
 
 expressApp.listen(3333, () => {
-  console.log('Example app listening on port 3333!');
+  console.log('Bot listening on port 3333!');
 });
