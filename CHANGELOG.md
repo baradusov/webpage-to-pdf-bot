@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.6
+* Upgraded Puppeteer to 8.0.0
+
 ## 0.8.5
 * Fixed network timeout error
 * Changed message to admin
