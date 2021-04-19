@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.8
+* Updated dependencies
+
 ## 0.8.7
 * Updated dependencies
 * Restart only pdf bot
