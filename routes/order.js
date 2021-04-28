@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
     res.status(200).send('ok');
   } catch (error) {
-    console.log(error);
+    console.error('order error:', error);
     res.status(200).send('ok');
   }
 };
