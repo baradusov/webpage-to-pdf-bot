@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.12
+* Log update when sending pdf
+
 ## 0.8.11
 * Add context for errors
 
