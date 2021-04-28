@@ -8,7 +8,7 @@ module.exports = async (url) => {
     const readblePage = reader.parse();
     return readblePage;
   } catch (error) {
-    console.error('getReadableContent', error);
+    console.error('getReadableContent error:', url, error);
 
     if (error.name === 'RequestError') {
       throw "Can't open the link 😞";
