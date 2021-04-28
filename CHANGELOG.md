@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.10
+* Print errors to stderr instead of stdout
+
 ## 0.8.9
 * Changed deploy event on release published 
 * Updated dependencies
