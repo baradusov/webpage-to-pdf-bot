@@ -44,6 +44,8 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       await updateUser(ctx.chat.id);
 
+      console.log('Sending pdf for update:', ctx.message);
+
       return ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
         Extra.inReplyTo(ctx.message.message_id)
@@ -51,7 +53,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (message.includes('goes wrong')) {
-      ctx.telegram.sendMessage(86907467, 'Check me, maybe I\'m down.');
+      ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
     }
 
     return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
