@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.8.13
+* Fix bot not resoponding due to Telegram read timeout
+* Log Telegraf errors to stderr
+
 ## 0.8.12
 * Log update when sending pdf
 
