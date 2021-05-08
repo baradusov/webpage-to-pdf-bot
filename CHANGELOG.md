@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.9.0
+* Change jsdom user-agent to chrome's one
+* Ignore non-valid ssl
+
 ## 0.8.13
 * Fix bot not resoponding due to Telegram read timeout
 * Log Telegraf errors to stderr
