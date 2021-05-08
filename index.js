@@ -64,6 +64,10 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
+bot.catch((reason) => {
+  console.error(reason);
+});
+
 const expressApp = express();
 const bodyParser = express.urlencoded({ extended: true });
 expressApp.use(bot.webhookCallback('/api'));
