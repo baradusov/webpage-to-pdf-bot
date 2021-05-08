@@ -1,9 +1,13 @@
-const { JSDOM } = require('jsdom');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 const { Readability } = require('@mozilla/readability');
 
 module.exports = async (url) => {
   try {
-    const doc = await JSDOM.fromURL(url);
+    const resourceLoader = new jsdom.ResourceLoader({
+      strictSSL: false,
+    });
+    const doc = await JSDOM.fromURL(url, { resources: resourceLoader });
     const reader = new Readability(doc.window.document);
     const readblePage = reader.parse();
     return readblePage;
