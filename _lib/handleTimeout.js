@@ -8,10 +8,9 @@ module.exports = async (handler) => {
       () =>
         resolve({
           pdf: false,
-          message:
-            "Can't handle it, the webpage is too big. Try sending it to me again, sometimes it helps.",
+          message: 'The webpage taking too long to open.',
         }),
-      15000
+      28000
     );
   });
 

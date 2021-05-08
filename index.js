@@ -4,7 +4,7 @@ const express = require('express');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const order = require('./routes/order');
-const { handleUserMessage } = require('./_lib');
+const { handleUserMessage, handleTimeout } = require('./_lib');
 const { updateUser, canUseBot } = require('./_lib/db');
 const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
 
@@ -33,7 +33,9 @@ bot.command('support', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (await canUseBot(ctx.chat.id)) {
-    const { pdf, name, message } = await handleUserMessage(ctx);
+    const { pdf, name, message } = await handleTimeout(() =>
+      handleUserMessage(ctx)
+    );
 
     if (pdf) {
       if (message) {
