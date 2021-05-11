@@ -1,7 +1,7 @@
-const puppeteer = require('puppeteer');
-const { PAGE_STYLE } = require('./config');
+import puppeteer from 'puppeteer';
+import { PAGE_STYLE } from './config.js';
 
-module.exports = async ({ title, content }, source) => {
+export const generatePdf = async ({ title, content }, source) => {
   let browser = null;
 
   try {

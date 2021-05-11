@@ -1,7 +1,7 @@
 const hasCaptionEntities = (message) => message.caption_entities || null;
 const hasEntities = (message) => message.entities || null;
 
-module.exports = (message) => {
+export const getUrls = (message) => {
   let urls = [];
 
   if (hasEntities(message)) {

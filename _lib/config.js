@@ -1,4 +1,4 @@
-const ALLOWED_UPDATES = [
+export const ALLOWED_UPDATES = [
   'text',
   'audio',
   'dice',
@@ -13,7 +13,7 @@ const ALLOWED_UPDATES = [
   'forward',
 ];
 
-const PAGE_STYLE = `
+export const PAGE_STYLE = `
   body { font-size: 2em; }
   pre { padding: 20px; background-color: linen; }
   code { font-family: monospace; }
@@ -21,7 +21,7 @@ const PAGE_STYLE = `
   footer { margin-top: 20px; }
 `;
 
-const BOT_REPLIES = {
+export const BOT_REPLIES = {
   startCommand:
     "You send me a link, I'll send you a readable pdf file. More info in /help.",
   helpCommand: `
@@ -47,10 +47,4 @@ If you have any questions, suggestions, comments or something not working, feel 
   thankMessage: 'Thank you for supporting the bot!',
   limit:
     "For some reason you can't use the bot. Message @baradusov for more info.",
-};
-
-module.exports = {
-  PAGE_STYLE,
-  BOT_REPLIES,
-  ALLOWED_UPDATES,
 };

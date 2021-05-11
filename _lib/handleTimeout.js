@@ -1,4 +1,4 @@
-module.exports = async (handler) => {
+export const handleTimeout = async (handler) => {
   const data = new Promise((resolve) => {
     resolve(handler());
   });

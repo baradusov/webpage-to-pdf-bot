@@ -1,12 +1,12 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const express = require('express');
-const Telegraf = require('telegraf');
-const Extra = require('telegraf/extra');
-const order = require('./routes/order');
-const { handleUserMessage, handleTimeout } = require('./_lib');
-const { updateUser, canUseBot } = require('./_lib/db');
-const { BOT_REPLIES, ALLOWED_UPDATES } = require('./_lib/config');
+import express from 'express';
+import { Telegraf } from 'telegraf';
+import order from './routes/order.js';
+import { handleUserMessage, handleTimeout } from './_lib/index.js';
+import { updateUser, canUseBot } from './_lib/db.js';
+import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
 
 const BOT_TOKEN =
   process.env.NODE_ENV == 'development'
@@ -39,7 +39,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
     if (pdf) {
       if (message) {
-        ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
+        ctx.reply(message, {
+          reply_to_message_id: ctx.message.message_id,
+        });
       }
 
       ctx.replyWithChatAction('upload_document');
@@ -50,7 +52,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       return ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
-        Extra.inReplyTo(ctx.message.message_id)
+        {
+          reply_to_message_id: ctx.message.message_id,
+        }
       );
     }
 
@@ -58,7 +62,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
     }
 
-    return ctx.reply(message, Extra.inReplyTo(ctx.message.message_id));
+    return ctx.reply(message, {
+      reply_to_message_id: ctx.message.message_id,
+    });
   }
 
   return ctx.reply(BOT_REPLIES.limit);

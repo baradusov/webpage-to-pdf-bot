@@ -1,8 +1,8 @@
-const jsdom = require('jsdom');
+import jsdom from 'jsdom';
 const { JSDOM } = jsdom;
-const { Readability } = require('@mozilla/readability');
+import { Readability } from '@mozilla/readability';
 
-module.exports = async (url) => {
+export const getReadableContent = async (url) => {
   try {
     const resourceLoader = new jsdom.ResourceLoader({
       userAgent:

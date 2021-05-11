@@ -1,13 +1,5 @@
-const getUrls = require('./getUrls');
-const generatePdf = require('./generatePdf');
-const getReadableContent = require('./getReadableContent');
-const handleTimeout = require('./handleTimeout');
-const handleUserMessage = require('./handleUserMessage');
-
-module.exports = {
-  getUrls,
-  generatePdf,
-  getReadableContent,
-  handleTimeout,
-  handleUserMessage,
-};
+export { getUrls } from './getUrls.js';
+export { generatePdf } from './generatePdf.js';
+export { getReadableContent } from './getReadableContent.js';
+export { handleTimeout } from './handleTimeout.js';
+export { handleUserMessage } from './handleUserMessage.js';

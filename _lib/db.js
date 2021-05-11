@@ -1,5 +1,6 @@
-const url = require('url');
-const MongoClient = require('mongodb').MongoClient;
+import url from 'url';
+import mongodb from 'mongodb';
+const MongoClient = mongodb.MongoClient;
 
 // Create cached connection variable
 let cachedDb = null;
@@ -28,7 +29,7 @@ const connectToDatabase = async (uri) => {
   return db;
 };
 
-const setupUser = async (id) => {
+export const setupUser = async (id) => {
   const db = await connectToDatabase(process.env.MONGO_URL);
   const usersCollection = db.collection('users');
   const user = await usersCollection.findOne({ id: Number(id) });
@@ -50,7 +51,7 @@ const setupUser = async (id) => {
   return user;
 };
 
-const updateUser = async (id) => {
+export const updateUser = async (id) => {
   const db = await connectToDatabase(process.env.MONGO_URL);
   const usersCollection = db.collection('users');
   await setupUser(id);
@@ -75,22 +76,15 @@ const updateUser = async (id) => {
   return result.value;
 };
 
-const canUseBot = async (id) => {
+export const canUseBot = async (id) => {
   return true;
 };
 
-const saveOrder = async (order) => {
+export const saveOrder = async (order) => {
   const db = await connectToDatabase(process.env.MONGO_URL);
   const ordersCollection = db.collection('orders');
   const userId = order['url_params[your_telegram_id]'];
   const result = await ordersCollection.insertOne({ userId, ...order });
 
   return result.ops[0];
-};
-
-module.exports = {
-  setupUser,
-  updateUser,
-  canUseBot,
-  saveOrder,
 };

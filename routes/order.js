@@ -1,10 +1,10 @@
-const Telegraf = require('telegraf');
-const { BOT_REPLIES } = require('../_lib/config');
-const { saveOrder } = require('../_lib/db');
+import { Telegraf } from 'telegraf';
+import { BOT_REPLIES } from '../_lib/config.js';
+import { saveOrder } from '../_lib/db.js';
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   try {
     const order = req.body;
     const user = order.url_params.your_telegram_id;

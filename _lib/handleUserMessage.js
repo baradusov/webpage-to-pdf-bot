@@ -1,8 +1,6 @@
-const getUrls = require('./getUrls');
-const generatePdf = require('./generatePdf');
-const getReadableContent = require('./getReadableContent');
+import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
 
-module.exports = async ({ message }) => {
+export const handleUserMessage = async ({ message }) => {
   try {
     const urls = getUrls(message);
 
