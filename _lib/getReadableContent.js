@@ -2,6 +2,15 @@ import jsdom from 'jsdom';
 const { JSDOM } = jsdom;
 import { Readability } from '@mozilla/readability';
 
+const extraCleaning = (el) => {
+  const { window } = new JSDOM(el.innerHTML);
+  window.document.querySelectorAll('img').forEach((img) => {
+    img.removeAttribute('loading');
+  });
+
+  return window.document.body.innerHTML;
+};
+
 export const getReadableContent = async (url) => {
   try {
     const resourceLoader = new jsdom.ResourceLoader({
@@ -10,7 +19,12 @@ export const getReadableContent = async (url) => {
       strictSSL: false,
     });
     const doc = await JSDOM.fromURL(url, { resources: resourceLoader });
-    const reader = new Readability(doc.window.document);
+    const reader = new Readability(doc.window.document, {
+      serializer: (el) => {
+        const cleanedReadablePage = extraCleaning(el);
+        return cleanedReadablePage;
+      },
+    });
     const readblePage = reader.parse();
     return readblePage;
   } catch (error) {
