@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.10.1
+* Fix images don't showing cause lazy attribute
+
 ## 0.10.0
 * Upgraded Telegraf.js
 * Updated dependencies
