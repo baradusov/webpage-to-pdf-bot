@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import { Telegraf } from 'telegraf';
+import { telegrafThrottler } from 'telegraf-throttler';
 import order from './routes/order.js';
 import { handleUserMessage, handleTimeout } from './_lib/index.js';
 import { updateUser, canUseBot } from './_lib/db.js';
@@ -14,6 +15,9 @@ const BOT_TOKEN =
     : process.env.BOT_TOKEN;
 
 const bot = new Telegraf(BOT_TOKEN);
+const throttler = telegrafThrottler();
+
+bot.use(throttler);
 
 bot.start(async (ctx) => {
   return ctx.reply(BOT_REPLIES.startCommand);
