@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.11.0
+* Decreased timeout
+* Added throttler
+
 ## 0.10.2
 * Updated dependencies
 
