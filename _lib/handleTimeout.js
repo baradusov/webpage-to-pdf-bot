@@ -10,7 +10,7 @@ export const handleTimeout = async (handler) => {
           pdf: false,
           message: 'The webpage taking too long to open.',
         }),
-      28000
+      15000
     );
   });
 
