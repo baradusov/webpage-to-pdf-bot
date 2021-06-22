@@ -52,7 +52,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       await updateUser(ctx.chat.id);
 
-      console.log('Sending pdf for update:', ctx.message);
+      console.log(`PDF was generated for ${ctx.message.text} and sended to user.`);
 
       return ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
@@ -63,8 +63,11 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (message.includes('goes wrong')) {
+      console.log('Bot is down. Last message was:', ctx.message.text);
       ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
     }
+
+    console.log(`No pdf generated for: ${ctx.message.text}. Reason: ${message}`);
 
     return ctx.reply(message, {
       reply_to_message_id: ctx.message.message_id,
