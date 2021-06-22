@@ -12,6 +12,7 @@ export const handleUserMessage = async ({ message }) => {
     }
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+    console.log('Started processing url:', url);
     const html = await getReadableContent(url);
 
     if (!html) {
