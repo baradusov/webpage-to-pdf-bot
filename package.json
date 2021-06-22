@@ -1,6 +1,6 @@
 {
   "name": "webpage-to-pdf-bot",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Bot can help to save web article as a readable pdf file",
   "main": "index.js",
   "type": "module",
