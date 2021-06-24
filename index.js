@@ -33,13 +33,13 @@ bot.help((ctx) => {
 });
 
 bot.command('donate', async (ctx) => {
-  return ctx.replyWithMarkdown(BOT_REPLIES.donateCommand(ctx.chat.id), {
+  return ctx.replyWithMarkdown(BOT_REPLIES.donateCommand(ctx.from.id), {
     disable_web_page_preview: true,
   });
 });
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
-  if (await canUseBot(ctx.chat.id)) {
+  if (await canUseBot(ctx.from.id)) {
     const { pdf, name, message } = await handleTimeout(() =>
       handleUserMessage(ctx)
     );
@@ -53,7 +53,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       ctx.replyWithChatAction('upload_document');
 
-      await updateUser(ctx.chat.id);
+      await updateUser(ctx.from.id);
 
       console.log(`PDF was generated for message: ${ctx.message.text}.`);
 
