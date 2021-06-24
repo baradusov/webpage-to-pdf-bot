@@ -16,6 +16,9 @@ const BOT_TOKEN =
 
 const bot = new Telegraf(BOT_TOKEN);
 const throttler = telegrafThrottler();
+const isPrivateChat = (ctx) => {
+  return ctx.message.chat.type === 'private';
+};
 
 bot.use(throttler);
 
@@ -62,16 +65,22 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       );
     }
 
-    if (message.includes('goes wrong')) {
-      console.log('Bot is down. Last message was:', ctx.message.text);
-      ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
+    if (isPrivateChat(ctx)) {
+      if (message.includes('goes wrong')) {
+        console.log('Bot is down. Last message was:', ctx.message.text);
+        ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
+      }
+
+      console.log(
+        `No pdf generated for: ${ctx.message.text}. Reason: ${message}`
+      );
+
+      return ctx.reply(message, {
+        reply_to_message_id: ctx.message.message_id,
+      });
     }
 
-    console.log(`No pdf generated for: ${ctx.message.text}. Reason: ${message}`);
-
-    return ctx.reply(message, {
-      reply_to_message_id: ctx.message.message_id,
-    });
+    return ctx;
   }
 
   return ctx.reply(BOT_REPLIES.limit);
