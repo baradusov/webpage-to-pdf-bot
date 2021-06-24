@@ -29,8 +29,8 @@ bot.help((ctx) => {
   });
 });
 
-bot.command('support', async (ctx) => {
-  return ctx.replyWithMarkdown(BOT_REPLIES.supportCommand(ctx.chat.id), {
+bot.command('donate', async (ctx) => {
+  return ctx.replyWithMarkdown(BOT_REPLIES.donateCommand(ctx.chat.id), {
     disable_web_page_preview: true,
   });
 });

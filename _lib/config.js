@@ -29,8 +29,8 @@ export const BOT_REPLIES = {
 
 Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
 
-*Support*
-You can support the bot by pressing /support command. It will generate an unique link for you.
+*Donate*
+You can donate to support development of the bot by pressing /donate command. It will generate an unique link for you.
 
 *Updates about the bot*
 You can read all about the new updates in the bot's news channnel [@baradusov\_support](https://t.me/baradusov\_support).
@@ -40,9 +40,9 @@ If you have any questions, suggestions, comments or something not working, feel 
 
 *Commands*
 /help — shows this message
-/support — get an unique link to support the bot`,
-  supportCommand: (id) => {
-    return `[Support the bot on Gumroad](https://gum.co/support-webpage-to-pdf-bot?your_telegram_id=${id})`;
+/donate — get an unique link to donate to support development of the bot`,
+  donateCommand: (id) => {
+    return `[Donate to support development of the bot on Gumroad](https://gum.co/support-webpage-to-pdf-bot?your_telegram_id=${id})`;
   },
   thankMessage: 'Thank you for supporting the bot!',
   limit:
