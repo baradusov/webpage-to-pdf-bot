@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.12.0
+* Added ability to work in group chats
+* Changed log message
+* Changed support command to donate
+
 ## 0.11.2
 * Better logging
 
