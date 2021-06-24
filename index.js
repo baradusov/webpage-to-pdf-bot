@@ -52,7 +52,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       await updateUser(ctx.chat.id);
 
-      console.log(`PDF was generated for ${ctx.message.text} and sended to user.`);
+      console.log(`PDF was generated for message: ${ctx.message.text}.`);
 
       return ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
