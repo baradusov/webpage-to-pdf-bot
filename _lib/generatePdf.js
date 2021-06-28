@@ -10,6 +10,7 @@ export const generatePdf = async ({ title, content }, source) => {
       args: ['--no-sandbox', '--single-process', '--no-zygote'],
     });
     const page = await browser.newPage();
+    const date = new Date();
 
     await page.setContent(
       `
@@ -23,7 +24,8 @@ export const generatePdf = async ({ title, content }, source) => {
   <h1>${title}</h1>
   ${content}
   <footer>
-  <a class="source" href="${source}">${source}</a>
+  <p>PDF's generated at: ${date}</p>
+  <p>Source: <a class="source" href="${source}">${source}</a></p>
   </footer>
   </body>
   </html>
