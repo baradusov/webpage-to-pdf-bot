@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.13.0
+* Added date and time to PDF
+
 ## 0.12.1
 * Changed chat.id to user.id
 
