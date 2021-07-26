@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.13.1
+* Changed a log message
+* Prevent non-html content type to be downloaded
+
 ## 0.13.0
 * Added date and time to PDF
 
