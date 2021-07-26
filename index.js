@@ -5,7 +5,7 @@ import express from 'express';
 import { Telegraf } from 'telegraf';
 import { telegrafThrottler } from 'telegraf-throttler';
 import order from './routes/order.js';
-import { handleUserMessage, handleTimeout } from './_lib/index.js';
+import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
 import { updateUser, canUseBot } from './_lib/db.js';
 import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
 
@@ -55,7 +55,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       await updateUser(ctx.from.id);
 
-      console.log(`PDF was generated for message: ${ctx.message.text}.`);
+      console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
 
       return ctx.replyWithDocument(
         { source: pdf, filename: `${name}.pdf`, caption: message },
