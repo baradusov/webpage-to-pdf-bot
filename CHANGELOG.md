@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.13.2
+* Changed about info
+
 ## 0.13.1
 * Changed a log message
 * Prevent non-html content type to be downloaded
