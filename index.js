@@ -86,8 +86,14 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
-bot.catch((reason) => {
-  console.error(reason);
+bot.catch((reason, ctx) => {
+  console.error('ERROR', reason);
+
+  if (reason.name === 'FetchError') {
+    return ctx.reply("Can't generate pdf from the link 😞", {
+      reply_to_message_id: ctx.message.message_id,
+    });
+  }
 });
 
 const expressApp = express();
