@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.13.3
+* Send message if bot catched fetch error
+
 ## 0.13.2
 * Changed about info
 
