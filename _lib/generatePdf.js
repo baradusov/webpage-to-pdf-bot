@@ -8,6 +8,8 @@ export const generatePdf = async ({ title, content }, source) => {
     browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--single-process', '--no-zygote'],
+      handleSIGTERM: true,
+      handleSIGINT: true,
     });
     const page = await browser.newPage();
     const date = new Date();
