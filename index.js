@@ -4,7 +4,6 @@ dotenv.config();
 import express from 'express';
 import { Telegraf } from 'telegraf';
 import { telegrafThrottler } from 'telegraf-throttler';
-import order from './routes/order.js';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
 import { updateUser, canUseBot } from './_lib/db.js';
 import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
@@ -101,8 +100,6 @@ expressApp.get('/', (req, res) => {
 expressApp.all('/api', (req, res) => {
   res.status(200).send('ok');
 });
-
-expressApp.post('/order', bodyParser, order);
 
 expressApp.listen(3333, () => {
   console.log('Bot listening on port 3333!');
