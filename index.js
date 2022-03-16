@@ -32,12 +32,6 @@ bot.help((ctx) => {
   });
 });
 
-bot.command('donate', async (ctx) => {
-  return ctx.replyWithMarkdown(BOT_REPLIES.donateCommand(ctx.from.id), {
-    disable_web_page_preview: true,
-  });
-});
-
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (await canUseBot(ctx.from.id)) {
     const { pdf, name, message } = await handleTimeout(() =>

@@ -29,9 +29,6 @@ export const BOT_REPLIES = {
 
 Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
 
-*Donate*
-You can support development of the bot on [Patreon](https://www.patreon.com/baradusov).
-
 *Updates about the bot*
 You can read all about the new updates in the bot's news channnel [@baradusov\_support](https://t.me/baradusov\_support).
 
@@ -39,12 +36,7 @@ You can read all about the new updates in the bot's news channnel [@baradusov\_s
 If you have any questions, suggestions, comments or something not working, feel free to message @baradusov.
 
 *Commands*
-/help — shows this message
-/donate — donate to support development of the bot`,
-  donateCommand: (id) => {
-    return `You can support development of the bot on [Patreon](https://www.patreon.com/baradusov).`;
-  },
-  thankMessage: 'Thank you for supporting the bot!',
+/help — shows this message`,
   limit:
     "For some reason you can't use the bot. Message @baradusov for more info.",
 };
