@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.14.0
+* Disabled the bot...
+* Removed donation
+
 ## 0.13.4
 * Handle SIGTERM and SIGINT
 
