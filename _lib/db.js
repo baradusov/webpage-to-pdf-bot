@@ -77,7 +77,7 @@ export const updateUser = async (id) => {
 };
 
 export const canUseBot = async (id) => {
-  return true;
+  return false;
 };
 
 export const saveOrder = async (order) => {

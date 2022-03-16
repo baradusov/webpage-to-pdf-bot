@@ -38,5 +38,5 @@ If you have any questions, suggestions, comments or something not working, feel 
 *Commands*
 /help — shows this message`,
   limit:
-    "For some reason you can't use the bot. Message @baradusov for more info.",
+    'The bot is disabled indefinitely. Check out @baradusov_support for more info.',
 };
