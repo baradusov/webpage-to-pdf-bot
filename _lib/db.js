@@ -77,7 +77,11 @@ export const updateUser = async (id) => {
 };
 
 export const canUseBot = async (id) => {
-  return false;
+  if (process.env.BOT_STATUS === 'disabled') {
+    return false;
+  }
+
+  return true;
 };
 
 export const saveOrder = async (order) => {
