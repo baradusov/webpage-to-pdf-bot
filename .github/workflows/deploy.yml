@@ -19,4 +19,4 @@ jobs:
             cd /var/www/pdf.baradusov.ru/app/
             git pull origin master
             npm ci
-            sudo -u nodejs pm2 restart /var/pm2-config/ecosystem.config.js --only pdf --env production --time
+            pm2 restart /var/pm2-config/ecosystem.config.js --only pdf --env production --time
