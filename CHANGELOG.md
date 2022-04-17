@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.15.1
+* Change restart command
+
 ## 0.15.0
 * Change webhook mode to long polling
 * Add ability disable/enable bot with env
