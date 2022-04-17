@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
 import { Telegraf } from 'telegraf';
 import { telegrafThrottler } from 'telegraf-throttler';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
@@ -89,18 +88,7 @@ bot.catch((reason, ctx) => {
   }
 });
 
-const expressApp = express();
-const bodyParser = express.urlencoded({ extended: true });
-expressApp.use(bot.webhookCallback('/api'));
+bot.launch();
 
-expressApp.get('/', (req, res) => {
-  res.status(200).send('ok');
-});
-
-expressApp.all('/api', (req, res) => {
-  res.status(200).send('ok');
-});
-
-expressApp.listen(3333, () => {
-  console.log('Bot listening on port 3333!');
-});
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
