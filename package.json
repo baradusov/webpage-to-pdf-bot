@@ -20,8 +20,10 @@
     "url": "https://github.com/baradusov/webpage-to-pdf-bot.git"
   },
   "dependencies": {
+    "@grammyjs/transformer-throttler": "^1.1.2",
     "@mozilla/readability": "^0.4.2",
     "dotenv": "^16.0.0",
+    "grammy": "^1.8.2",
     "jsdom": "^19.0.0",
     "mongodb": "^4.5.0",
     "node-fetch": "^3.2.4",

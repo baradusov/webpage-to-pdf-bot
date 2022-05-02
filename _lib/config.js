@@ -1,16 +1,16 @@
 export const ALLOWED_UPDATES = [
-  'text',
-  'audio',
-  'dice',
-  'document',
-  'photo',
-  'sticker',
-  'video',
-  'voice',
-  'contact',
-  'location',
-  'venue',
-  'forward',
+  'message:text',
+  'message:audio',
+  'message:dice',
+  'message:document',
+  'message:photo',
+  'message:sticker',
+  'message:video',
+  'message:voice',
+  'message:contact',
+  'message:location',
+  'message:venue',
+  'message:forward_date',
 ];
 
 export const PAGE_STYLE = `
@@ -25,17 +25,17 @@ export const BOT_REPLIES = {
   startCommand:
     "You send me a link, I'll send you a readable pdf file. More info in /help.",
   helpCommand: `
-*Webpage to PDF bot* can help you to save web article as pdf file.
+<b>Webpage to PDF bot</b> can help you to save web article as pdf file.
 
 Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
 
-*Updates about the bot*
-You can read all about the new updates in the bot's news channnel [@baradusov\_support](https://t.me/baradusov\_support).
+<b>Updates about the bot</b>
+You can read all about the new updates in the bot's news channnel @baradusov_support.
 
-*Contacts*
+<b>Contacts</b>
 If you have any questions, suggestions, comments or something not working, feel free to message @baradusov.
 
-*Commands*
+<b>Commands</b>
 /help — shows this message`,
   limit:
     'The bot is disabled indefinitely. Check out @baradusov_support for more info.',

@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { Telegraf } from 'telegraf';
-import { telegrafThrottler } from 'telegraf-throttler';
+import { Bot, InputFile } from 'grammy';
+import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
 import { updateUser, canUseBot } from './_lib/db.js';
 import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
@@ -12,20 +12,21 @@ const BOT_TOKEN =
     ? process.env.BOT_TOKEN_DEV
     : process.env.BOT_TOKEN;
 
-const bot = new Telegraf(BOT_TOKEN);
-const throttler = telegrafThrottler();
+const bot = new Bot(BOT_TOKEN);
+const throttler = apiThrottler();
 const isPrivateChat = (ctx) => {
   return ctx.message.chat.type === 'private';
 };
 
-bot.use(throttler);
+bot.api.config.use(throttler);
 
-bot.start(async (ctx) => {
+bot.command('start', async (ctx) => {
   return ctx.reply(BOT_REPLIES.startCommand);
 });
 
-bot.help((ctx) => {
-  return ctx.replyWithMarkdown(BOT_REPLIES.helpCommand, {
+bot.command('help', (ctx) => {
+  return ctx.reply(BOT_REPLIES.helpCommand, {
+    parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
 });
@@ -49,12 +50,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
 
-      return ctx.replyWithDocument(
-        { source: pdf, filename: `${name}.pdf`, caption: message },
-        {
-          reply_to_message_id: ctx.message.message_id,
-        }
-      );
+      return ctx.replyWithDocument(new InputFile(pdf, `${name}.pdf`), {
+        reply_to_message_id: ctx.message.message_id,
+      });
     }
 
     if (isPrivateChat(ctx)) {
@@ -78,17 +76,23 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
-bot.catch((reason, ctx) => {
-  console.error('ERROR', reason);
+bot.catch((reason) => {
+  const { error, ctx } = reason;
+
+  console.error('ERROR', error);
 
   if (reason.name === 'FetchError') {
     return ctx.reply("Can't generate pdf from the link 😞", {
       reply_to_message_id: ctx.message.message_id,
     });
   }
+
+  return ctx.reply('Something goes wrong 😞', {
+    reply_to_message_id: ctx.message.message_id,
+  });
 });
 
-bot.launch();
+bot.start();
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
