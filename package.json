@@ -20,12 +20,12 @@
     "url": "https://github.com/baradusov/webpage-to-pdf-bot.git"
   },
   "dependencies": {
-    "@mozilla/readability": "^0.4.1",
-    "dotenv": "^10.0.0",
-    "jsdom": "^16.6.0",
-    "mongodb": "^3.6.9",
-    "node-fetch": "^2.6.1",
-    "puppeteer": "^10.0.0",
+    "@mozilla/readability": "^0.4.2",
+    "dotenv": "^16.0.0",
+    "jsdom": "^19.0.0",
+    "mongodb": "^4.5.0",
+    "node-fetch": "^3.2.4",
+    "puppeteer": "^13.7.0",
     "telegraf": "^4.3.0",
     "telegraf-throttler": "^0.6.0"
   }

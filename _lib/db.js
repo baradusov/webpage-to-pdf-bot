@@ -70,7 +70,7 @@ export const updateUser = async (id) => {
       id: Number(id),
     },
     update,
-    { returnOriginal: false }
+    { returnDocument: false }
   );
 
   return result.value;
