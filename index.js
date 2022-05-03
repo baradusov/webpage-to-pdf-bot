@@ -6,6 +6,7 @@ import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
 import { updateUser, canUseBot } from './_lib/db.js';
 import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
+import { generateScreenshot } from './_lib/generateScreenshot.js';
 
 const BOT_TOKEN =
   process.env.NODE_ENV == 'development'
@@ -29,6 +30,36 @@ bot.command('help', (ctx) => {
     parse_mode: 'HTML',
     disable_web_page_preview: true,
   });
+});
+
+bot.command('full', async (ctx) => {
+  const urls = getUrls(ctx.message);
+
+  if (urls) {
+    const firstUrl = urls[0];
+    const url = !firstUrl.includes('://') ? `http://${firstUrl}` : firstUrl;
+
+    console.log(`Starting to screenshot: ${url}.`);
+
+    const data = await handleTimeout(() => generateScreenshot(url));
+
+    if (data.error) {
+      return ctx.reply(data.message, {
+        reply_to_message_id: ctx.message.message_id,
+      });
+    }
+
+    console.log(`Screenshot was made for url: ${url}.`);
+
+    return ctx.replyWithDocument(
+      new InputFile(data.screenshot, `${data.name}.png`),
+      {
+        reply_to_message_id: ctx.message.message_id,
+      }
+    );
+  }
+
+  return ctx.reply('No url provided.');
 });
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {

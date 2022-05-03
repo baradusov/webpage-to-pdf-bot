@@ -1,5 +1,5 @@
 export const handleTimeout = async (handler) => {
-  const data = new Promise((resolve) => {
+  const pageData = new Promise((resolve) => {
     resolve(handler());
   });
 
@@ -7,14 +7,14 @@ export const handleTimeout = async (handler) => {
     setTimeout(
       () =>
         resolve({
-          pdf: false,
+          error: true,
           message: 'The webpage taking too long to open.',
         }),
       15000
     );
   });
 
-  const { pdf, name, message } = await Promise.race([data, timeout]);
+  const data = await Promise.race([pageData, timeout]);
 
-  return { pdf, name, message };
+  return data;
 };
