@@ -13,16 +13,16 @@ export const handleUserMessage = async ({ message }) => {
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
     console.log('Started processing url:', url);
-    const html = await getReadableContent(url);
+    const readableContent = await getReadableContent(url);
 
-    if (!html) {
+    if (!readableContent || readableContent.error) {
       return {
         pdf: false,
         message: "Can't get the content from the link 😞",
       };
     }
 
-    const { pdf, name } = await generatePdf(html, url);
+    const { pdf, name } = await generatePdf(readableContent);
 
     return {
       pdf,

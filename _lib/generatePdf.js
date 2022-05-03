@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import { PAGE_STYLE } from './config.js';
 
-export const generatePdf = async ({ title, content }, source) => {
+export const generatePdf = async ({ title, content, url }) => {
   let browser = null;
 
   try {
@@ -27,7 +27,7 @@ export const generatePdf = async ({ title, content }, source) => {
   ${content}
   <footer>
   <p>PDF's generated at: ${date}</p>
-  <p>Source: <a class="source" href="${source}">${source}</a></p>
+  <p>Source: <a class="source" href="${url}">${url}</a></p>
   </footer>
   </body>
   </html>
@@ -51,7 +51,7 @@ export const generatePdf = async ({ title, content }, source) => {
       pdf: buffer,
     };
   } catch (error) {
-    console.error('generatePdf error:', source, error);
+    console.error('generatePdf error:', url, error);
     throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
   } finally {
     if (browser !== null) {
