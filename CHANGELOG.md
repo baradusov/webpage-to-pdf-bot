@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.18.0
+* Added ability to screenshot full page in png
+
 ## 0.17.0
 * Moved to new parser
 
