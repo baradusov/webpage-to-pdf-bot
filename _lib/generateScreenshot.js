@@ -11,15 +11,18 @@ export const generateScreenshot = async (url) => {
       handleSIGINT: true,
       defaultViewport: {
         width: 1920,
-        height: 1080,
+        height: 1200,
       },
     });
     const page = await browser.newPage();
 
+    await page.emulateMediaType('screen');
     await page.goto(url, { waitUntil: 'networkidle2', timeout: '15000' });
 
-    const buffer = await page.screenshot({
-      fullPage: true,
+    const buffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      displayHeaderFooter: true,
     });
     const title = await page.title();
 

@@ -52,7 +52,7 @@ bot.command('full', async (ctx) => {
     console.log(`Screenshot was made for url: ${url}.`);
 
     return ctx.replyWithDocument(
-      new InputFile(data.screenshot, `${data.name}.png`),
+      new InputFile(data.screenshot, `${data.name}.pdf`),
       {
         reply_to_message_id: ctx.message.message_id,
       }
