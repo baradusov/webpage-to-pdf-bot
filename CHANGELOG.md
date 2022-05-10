@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.19.1
+* Fix new user creation
+
 ## 0.19.0
 * Change format from png to pdf for screenshot mode
 
