@@ -35,7 +35,7 @@ export const setupUser = async (id) => {
   const user = await usersCollection.findOne({ id: Number(id) });
 
   if (!user) {
-    const result = await usersCollection.insertOne({
+    await usersCollection.insertOne({
       id: Number(id),
       status: 'active',
       metrics: {
@@ -45,7 +45,7 @@ export const setupUser = async (id) => {
       lastActivityAt: Date.now(),
     });
 
-    return result.ops[0];
+    return;
   }
 
   return user;
