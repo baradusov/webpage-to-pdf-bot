@@ -52,7 +52,7 @@ bot.command('full', async (ctx) => {
     console.log(`Screenshot was made for url: ${url}.`);
 
     return ctx.replyWithDocument(
-      new InputFile(data.screenshot, `${data.name}.pdf`),
+      new InputFile(data.screenshot, `${data.name.trim()}.pdf`),
       {
         reply_to_message_id: ctx.message.message_id,
       }
@@ -81,7 +81,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
 
-      return ctx.replyWithDocument(new InputFile(pdf, `${name}.pdf`), {
+      return ctx.replyWithDocument(new InputFile(pdf, `${name.trim()}.pdf`), {
         reply_to_message_id: ctx.message.message_id,
       });
     }
