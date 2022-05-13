@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.19.2
+* Fix error with incorrect filename
+
 ## 0.19.1
 * Fix new user creation
 
