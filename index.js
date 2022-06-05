@@ -75,7 +75,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
         });
       }
 
-      ctx.replyWithChatAction('upload_document');
+      await ctx.replyWithChatAction('upload_document');
 
       await updateUser(ctx.from.id);
 
@@ -111,6 +111,10 @@ bot.catch((reason) => {
   const { error, ctx } = reason;
 
   console.error('ERROR', error);
+
+  if (error.error_code === 403) {
+    return console.error(error.description);
+  }
 
   if (reason.name === 'FetchError') {
     return ctx.reply("Can't generate pdf from the link 😞", {
