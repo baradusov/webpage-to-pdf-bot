@@ -21,7 +21,7 @@ const isPrivateChat = (ctx) => {
 
 bot.api.config.use(throttler);
 
-bot.command('start', async (ctx) => {
+bot.command('start', (ctx) => {
   return ctx.reply(BOT_REPLIES.startCommand);
 });
 
@@ -110,9 +110,13 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 bot.catch((reason) => {
   const { error, ctx } = reason;
 
-  console.error('ERROR', error);
-
+  // Forbidden: bot was blocked by the user
   if (error.error_code === 403) {
+    return console.error(error.description);
+  }
+
+  // Bad Request: replied message not found
+  if (error.error_code === 400) {
     return console.error(error.description);
   }
 
@@ -122,9 +126,9 @@ bot.catch((reason) => {
     });
   }
 
-  return ctx.reply('Something goes wrong 😞', {
-    reply_to_message_id: ctx.message.message_id,
-  });
+  console.error('ERROR', error);
+
+  return ctx.reply('Something goes wrong 😞');
 });
 
 bot.start();
