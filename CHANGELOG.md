@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.19.4
+* Fix crash when replied message not found
+
 ## 0.19.3
 * Fix infinite loop if bot was blocked by any user
 
