@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@grammyjs/transformer-throttler": "^1.1.2",
-    "article-parser": "^6.0.0",
+    "article-parser": "^7.2.6-rc1",
     "dotenv": "^16.0.0",
     "grammy": "^1.8.2",
     "mongodb": "^4.5.0",
