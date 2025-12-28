@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.21.0
+* Add in-memory cache for parsed content (1h TTL)
+* Cache parse errors to skip re-parsing unparseable URLs
+* Add manual deploy instructions to README
+
 ## 0.20.0
 * Add proper timeout cancellation with AbortController
 * Add error categorization (NetworkError, ParseError, BrowserError)
