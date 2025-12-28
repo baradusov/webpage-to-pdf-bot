@@ -8,7 +8,7 @@ const extraCleaning = (document) => {
   return document;
 };
 
-const parse = async (url) => {
+const parse = async (url, signal) => {
   addQueryRules([
     {
       tranform: extraCleaning,
@@ -20,6 +20,7 @@ const parse = async (url) => {
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
       accept: 'text/html; charset=utf-8',
     },
+    signal,
   });
 
   const article = await extract(url);
@@ -27,12 +28,19 @@ const parse = async (url) => {
   return article;
 };
 
-export const getReadableContent = async (url) => {
+export const getReadableContent = async (url, signal) => {
+  if (signal?.aborted) {
+    return { error: true };
+  }
+
   try {
-    const readableContent = await parse(url);
+    const readableContent = await parse(url, signal);
 
     return readableContent;
   } catch (error) {
+    if (signal?.aborted || error.name === 'AbortError') {
+      return { error: true };
+    }
     console.error('getReadableContent error:', url, error);
 
     if (error.name === 'RequestError') {

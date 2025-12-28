@@ -1,8 +1,20 @@
 import puppeteer from 'puppeteer';
 import { PAGE_STYLE } from './config.js';
 
-export const generatePdf = async ({ title, content, url }) => {
+export const generatePdf = async ({ title, content, url }, signal) => {
+  if (signal?.aborted) {
+    throw 'Request cancelled.';
+  }
+
   let browser = null;
+
+  const abortHandler = () => {
+    if (browser) {
+      browser.close().catch(() => {});
+    }
+  };
+
+  signal?.addEventListener('abort', abortHandler);
 
   try {
     browser = await puppeteer.launch({
@@ -11,6 +23,11 @@ export const generatePdf = async ({ title, content, url }) => {
       handleSIGTERM: true,
       handleSIGINT: true,
     });
+
+    if (signal?.aborted) {
+      throw 'Request cancelled.';
+    }
+
     const page = await browser.newPage();
     const date = new Date();
 
@@ -34,6 +51,11 @@ export const generatePdf = async ({ title, content, url }) => {
   `,
       { waitUntil: 'networkidle0' }
     );
+
+    if (signal?.aborted) {
+      throw 'Request cancelled.';
+    }
+
     await page.addStyleTag({ content: PAGE_STYLE });
 
     const buffer = await page.pdf({
@@ -51,9 +73,13 @@ export const generatePdf = async ({ title, content, url }) => {
       pdf: buffer,
     };
   } catch (error) {
+    if (signal?.aborted) {
+      throw 'Request cancelled.';
+    }
     console.error('generatePdf error:', url, error);
     throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
   } finally {
+    signal?.removeEventListener('abort', abortHandler);
     if (browser !== null) {
       await browser.close();
     }

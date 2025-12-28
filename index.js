@@ -40,7 +40,7 @@ bot.command('full', async (ctx) => {
 
     console.log(`Starting to screenshot: ${url}.`);
 
-    const data = await handleTimeout(() => generateScreenshot(url));
+    const data = await handleTimeout((signal) => generateScreenshot(url, signal));
 
     if (data.error) {
       return ctx.reply(data.message, {
@@ -63,8 +63,8 @@ bot.command('full', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (process.env.BOT_STATUS !== 'disabled') {
-    const { pdf, name, message } = await handleTimeout(() =>
-      handleUserMessage(ctx)
+    const { pdf, name, message } = await handleTimeout((signal) =>
+      handleUserMessage(ctx, signal)
     );
 
     if (pdf) {

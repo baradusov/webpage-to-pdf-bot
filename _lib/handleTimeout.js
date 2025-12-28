@@ -1,20 +1,28 @@
-export const handleTimeout = async (handler) => {
-  const pageData = new Promise((resolve) => {
-    resolve(handler());
+export const handleTimeout = async (handler, timeoutMs = 15000) => {
+  const controller = new AbortController();
+  let timeoutId;
+
+  const timeoutPromise = new Promise((resolve) => {
+    timeoutId = setTimeout(() => {
+      controller.abort();
+      resolve({
+        error: true,
+        message: 'The webpage taking too long to open.',
+      });
+    }, timeoutMs);
   });
 
-  const timeout = new Promise((resolve) => {
-    setTimeout(
-      () =>
-        resolve({
-          error: true,
-          message: 'The webpage taking too long to open.',
-        }),
-      15000
-    );
-  });
+  try {
+    const result = await Promise.race([
+      handler(controller.signal),
+      timeoutPromise,
+    ]);
 
-  const data = await Promise.race([pageData, timeout]);
-
-  return data;
+    clearTimeout(timeoutId);
+    return result;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    controller.abort();
+    throw error;
+  }
 };

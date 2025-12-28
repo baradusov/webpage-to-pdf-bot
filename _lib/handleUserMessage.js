@@ -1,6 +1,6 @@
 import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
 
-export const handleUserMessage = async ({ message }) => {
+export const handleUserMessage = async ({ message }, signal) => {
   try {
     const urls = getUrls(message);
 
@@ -13,7 +13,11 @@ export const handleUserMessage = async ({ message }) => {
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
     console.log('Started processing url:', url);
-    const readableContent = await getReadableContent(url);
+    const readableContent = await getReadableContent(url, signal);
+
+    if (signal?.aborted) {
+      return { error: true, message: 'Request cancelled.' };
+    }
 
     if (!readableContent || readableContent.error) {
       return {
@@ -22,7 +26,7 @@ export const handleUserMessage = async ({ message }) => {
       };
     }
 
-    const { pdf, name } = await generatePdf(readableContent);
+    const { pdf, name } = await generatePdf(readableContent, signal);
 
     return {
       pdf,
@@ -30,6 +34,9 @@ export const handleUserMessage = async ({ message }) => {
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
     };
   } catch (error) {
+    if (signal?.aborted) {
+      return { error: true, message: 'Request cancelled.' };
+    }
     console.error('handleUserMessage error:', message, error);
 
     return {
