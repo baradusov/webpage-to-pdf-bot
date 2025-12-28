@@ -1,6 +1,17 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.20.0
+* Add proper timeout cancellation with AbortController
+* Add error categorization (NetworkError, ParseError, BrowserError)
+* Add configurable timeout via TIMEOUT_MS env variable
+* Add admin notifications via ADMIN_CHAT_ID env variable
+* Add .env.example
+* Inline styles in HTML template
+* Refactor URL extraction logic
+* Update README with PM2 commands and deploy instructions
+* Remove MongoDB dependency
+
 ## 0.19.4
 * Fix crash when replied message not found
 

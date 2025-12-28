@@ -47,6 +47,14 @@ Deployment is automated via GitHub Actions and triggered by publishing a release
 
 ### How to deploy
 
+Before creating release:
+1. Update version in `package.json`
+2. Run `npm install` to update `package-lock.json`
+3. Update `CHANGELOG.md`
+4. Commit with message: `release X.X.X`
+5. Push to master
+
+Create release:
 1. Go to GitHub repository → Releases → "Create a new release"
 2. Create a new tag (e.g., `v0.19.5`)
 3. Fill in release title and description
