@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer';
 import { PAGE_STYLE } from './config.js';
+import { BrowserError, CancelledError } from './errors.js';
 
 export const generatePdf = async ({ title, content, url }, signal) => {
   if (signal?.aborted) {
-    throw 'Request cancelled.';
+    throw new CancelledError();
   }
 
   let browser = null;
@@ -25,7 +26,7 @@ export const generatePdf = async ({ title, content, url }, signal) => {
     });
 
     if (signal?.aborted) {
-      throw 'Request cancelled.';
+      throw new CancelledError();
     }
 
     const page = await browser.newPage();
@@ -53,7 +54,7 @@ export const generatePdf = async ({ title, content, url }, signal) => {
     );
 
     if (signal?.aborted) {
-      throw 'Request cancelled.';
+      throw new CancelledError();
     }
 
     await page.addStyleTag({ content: PAGE_STYLE });
@@ -73,11 +74,12 @@ export const generatePdf = async ({ title, content, url }, signal) => {
       pdf: buffer,
     };
   } catch (error) {
-    if (signal?.aborted) {
-      throw 'Request cancelled.';
+    if (signal?.aborted || error.name === 'CancelledError') {
+      throw new CancelledError();
     }
-    console.error('generatePdf error:', url, error);
-    throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
+
+    console.error('generatePdf error:', url, error.message);
+    throw new BrowserError(error.message, url);
   } finally {
     signal?.removeEventListener('abort', abortHandler);
     if (browser !== null) {

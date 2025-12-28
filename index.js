@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Bot, InputFile } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
-import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
+import { handleUserMessage, handleTimeout, getUrls, getUserMessage } from './_lib/index.js';
 import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
 import { generateScreenshot } from './_lib/generateScreenshot.js';
 
@@ -63,7 +63,7 @@ bot.command('full', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (process.env.BOT_STATUS !== 'disabled') {
-    const { pdf, name, message } = await handleTimeout(
+    const { pdf, name, message, errorType } = await handleTimeout(
       (signal) => handleUserMessage(ctx, signal),
       TIMEOUT_MS
     );
@@ -85,9 +85,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     }
 
     if (isPrivateChat(ctx)) {
-      if (message.includes('goes wrong')) {
-        console.log('Bot is down. Last message was:', ctx.message.text);
-        ctx.telegram.sendMessage(86907467, "Check me, maybe I'm down.");
+      if (errorType === 'BrowserError' && process.env.ADMIN_CHAT_ID) {
+        console.error('Browser error - notifying admin:', ctx.message.text);
+        bot.api.sendMessage(process.env.ADMIN_CHAT_ID, `Bot may be having issues.\nError: ${errorType}\nURL: ${ctx.message.text}`);
       }
 
       console.log(
@@ -110,23 +110,20 @@ bot.catch((reason) => {
 
   // Forbidden: bot was blocked by the user
   if (error.error_code === 403) {
-    return console.error(error.description);
+    return console.error('Bot blocked by user:', error.description);
   }
 
   // Bad Request: replied message not found
   if (error.error_code === 400) {
-    return console.error(error.description);
+    return console.error('Bad request:', error.description);
   }
 
-  if (reason.name === 'FetchError') {
-    return ctx.reply("Can't generate pdf from the link 😞", {
-      reply_to_message_id: ctx.message.message_id,
-    });
-  }
+  console.error('Unhandled error:', error.name, error.message);
 
-  console.error('ERROR', error);
-
-  return ctx.reply('Something goes wrong 😞');
+  const userMessage = getUserMessage(error);
+  return ctx.reply(userMessage, {
+    reply_to_message_id: ctx.message?.message_id,
+  });
 });
 
 bot.start();

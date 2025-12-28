@@ -1,8 +1,9 @@
 import puppeteer from 'puppeteer';
+import { BrowserError, NetworkError, CancelledError } from './errors.js';
 
 export const generateScreenshot = async (url, signal) => {
   if (signal?.aborted) {
-    throw 'Request cancelled.';
+    throw new CancelledError();
   }
 
   let browser = null;
@@ -28,16 +29,16 @@ export const generateScreenshot = async (url, signal) => {
     });
 
     if (signal?.aborted) {
-      throw 'Request cancelled.';
+      throw new CancelledError();
     }
 
     const page = await browser.newPage();
 
     await page.emulateMediaType('screen');
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: '15000' });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 15000 });
 
     if (signal?.aborted) {
-      throw 'Request cancelled.';
+      throw new CancelledError();
     }
 
     const buffer = await page.pdf({
@@ -52,11 +53,22 @@ export const generateScreenshot = async (url, signal) => {
       screenshot: buffer,
     };
   } catch (error) {
-    if (signal?.aborted) {
-      throw 'Request cancelled.';
+    if (signal?.aborted || error.name === 'CancelledError') {
+      throw new CancelledError();
     }
-    console.error('generateScreenshot error:', url, error);
-    throw 'Something goes wrong and the bot is not working now 😞. Try again later.\n\n@baradusov already know this and will fix it soon.\nOr if you already tried and the bot still not working, message him, please.';
+
+    console.error('generateScreenshot error:', url, error.message);
+
+    if (
+      error.name === 'TimeoutError' ||
+      error.message?.includes('net::ERR_NAME_NOT_RESOLVED') ||
+      error.message?.includes('net::ERR_CONNECTION_REFUSED') ||
+      error.message?.includes('net::ERR_INTERNET_DISCONNECTED')
+    ) {
+      throw new NetworkError(error.message, url);
+    }
+
+    throw new BrowserError(error.message, url);
   } finally {
     signal?.removeEventListener('abort', abortHandler);
     if (browser !== null) {

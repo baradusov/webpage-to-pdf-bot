@@ -1,4 +1,5 @@
 import { addQueryRules, extract, setRequestOptions } from 'article-parser';
+import { NetworkError, ParseError, CancelledError } from './errors.js';
 
 const extraCleaning = (document) => {
   document.querySelectorAll('img').forEach((img) => {
@@ -30,21 +31,37 @@ const parse = async (url, signal) => {
 
 export const getReadableContent = async (url, signal) => {
   if (signal?.aborted) {
-    return { error: true };
+    throw new CancelledError();
   }
 
   try {
     const readableContent = await parse(url, signal);
 
+    if (!readableContent || !readableContent.content) {
+      throw new ParseError('No content extracted', url);
+    }
+
     return readableContent;
   } catch (error) {
     if (signal?.aborted || error.name === 'AbortError') {
-      return { error: true };
+      throw new CancelledError();
     }
-    console.error('getReadableContent error:', url, error);
 
-    if (error.name === 'RequestError') {
-      throw "Can't open the link 😞";
+    if (error.name === 'CancelledError' || error.name === 'ParseError') {
+      throw error;
     }
+
+    console.error('getReadableContent error:', url, error.message);
+
+    if (
+      error.name === 'RequestError' ||
+      error.code === 'ENOTFOUND' ||
+      error.code === 'ECONNREFUSED' ||
+      error.code === 'ETIMEDOUT'
+    ) {
+      throw new NetworkError(error.message, url);
+    }
+
+    throw new ParseError(error.message, url);
   }
 };

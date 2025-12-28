@@ -1,4 +1,5 @@
 import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
+import { CancelledError, getUserMessage } from './errors.js';
 
 export const handleUserMessage = async ({ message }, signal) => {
   try {
@@ -16,7 +17,7 @@ export const handleUserMessage = async ({ message }, signal) => {
     const readableContent = await getReadableContent(url, signal);
 
     if (signal?.aborted) {
-      return { error: true, message: 'Request cancelled.' };
+      throw new CancelledError();
     }
 
     if (!readableContent || readableContent.error) {
@@ -34,14 +35,17 @@ export const handleUserMessage = async ({ message }, signal) => {
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
     };
   } catch (error) {
-    if (signal?.aborted) {
+    if (signal?.aborted || error.name === 'CancelledError') {
       return { error: true, message: 'Request cancelled.' };
     }
-    console.error('handleUserMessage error:', message, error);
+
+    console.error('handleUserMessage error:', error.name, error.message);
 
     return {
       pdf: false,
-      message: error,
+      message: getUserMessage(error),
+      errorType: error.name,
+      isRetryable: error.isRetryable,
     };
   }
 };

@@ -7,7 +7,9 @@ export const handleTimeout = async (handler, timeoutMs = 15000) => {
       controller.abort();
       resolve({
         error: true,
-        message: 'The webpage taking too long to open.',
+        message: 'The webpage is taking too long to load 😞',
+        errorType: 'TimeoutError',
+        isRetryable: true,
       });
     }, timeoutMs);
   });
