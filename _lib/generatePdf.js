@@ -33,31 +33,28 @@ export const generatePdf = async ({ title, content, url }, signal) => {
     const date = new Date();
 
     await page.setContent(
-      `
-  <!doctype html>
-  <html lang=en>
-  <head>
-  <meta charset=utf-8>
+      `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
   <title>${title}</title>
-  </head>
-  <body>
+  <style>${PAGE_STYLE}</style>
+</head>
+<body>
   <h1>${title}</h1>
   ${content}
   <footer>
-  <p>PDF's generated at: ${date}</p>
-  <p>Source: <a class="source" href="${url}">${url}</a></p>
+    <p>PDF generated at: ${date}</p>
+    <p>Source: <a class="source" href="${url}">${url}</a></p>
   </footer>
-  </body>
-  </html>
-  `,
+</body>
+</html>`,
       { waitUntil: 'networkidle0' }
     );
 
     if (signal?.aborted) {
       throw new CancelledError();
     }
-
-    await page.addStyleTag({ content: PAGE_STYLE });
 
     const buffer = await page.pdf({
       format: 'A4',
