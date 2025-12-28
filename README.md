@@ -5,7 +5,6 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 ## Requirements
 
 - Node.js
-- Chromium (for Puppeteer)
 
 ## Environment Variables
 
