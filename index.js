@@ -4,7 +4,6 @@ dotenv.config();
 import { Bot, InputFile } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
-import { updateUser, canUseBot } from './_lib/db.js';
 import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
 import { generateScreenshot } from './_lib/generateScreenshot.js';
 
@@ -63,7 +62,7 @@ bot.command('full', async (ctx) => {
 });
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
-  if (await canUseBot(ctx.from.id)) {
+  if (process.env.BOT_STATUS !== 'disabled') {
     const { pdf, name, message } = await handleTimeout(() =>
       handleUserMessage(ctx)
     );
@@ -76,8 +75,6 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       }
 
       await ctx.replyWithChatAction('upload_document');
-
-      await updateUser(ctx.from.id);
 
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
 

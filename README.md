@@ -5,7 +5,6 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 ## Requirements
 
 - Node.js
-- MongoDB
 - Chromium (for Puppeteer)
 
 ## Environment Variables
@@ -13,7 +12,6 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 ```
 BOT_TOKEN=<telegram_bot_token>
 BOT_TOKEN_DEV=<telegram_bot_token_for_dev>
-MONGODB_URI=<mongodb_connection_string>
 ```
 
 ## Development
