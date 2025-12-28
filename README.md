@@ -43,9 +43,19 @@ pm2 status        # Check status
 
 ## Deploy
 
-Deployment is automated via GitHub Actions and triggered by publishing a release.
+### Manual deploy
 
-### How to deploy
+```bash
+ssh user@server
+cd ~/www/webpage-to-pdf-bot/app
+git pull
+npm ci
+pm2 restart pdf
+```
+
+### GitHub Actions deploy
+
+Automated deployment is triggered by publishing a release.
 
 Before creating release:
 1. Update version in `package.json`
