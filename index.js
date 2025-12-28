@@ -4,7 +4,7 @@ dotenv.config();
 import { Bot, InputFile } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls } from './_lib/index.js';
-import { BOT_REPLIES, ALLOWED_UPDATES } from './_lib/config.js';
+import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
 import { generateScreenshot } from './_lib/generateScreenshot.js';
 
 const BOT_TOKEN =
@@ -40,7 +40,7 @@ bot.command('full', async (ctx) => {
 
     console.log(`Starting to screenshot: ${url}.`);
 
-    const data = await handleTimeout((signal) => generateScreenshot(url, signal));
+    const data = await handleTimeout((signal) => generateScreenshot(url, signal), TIMEOUT_MS);
 
     if (data.error) {
       return ctx.reply(data.message, {
@@ -63,8 +63,9 @@ bot.command('full', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (process.env.BOT_STATUS !== 'disabled') {
-    const { pdf, name, message } = await handleTimeout((signal) =>
-      handleUserMessage(ctx, signal)
+    const { pdf, name, message } = await handleTimeout(
+      (signal) => handleUserMessage(ctx, signal),
+      TIMEOUT_MS
     );
 
     if (pdf) {

@@ -1,3 +1,5 @@
+export const TIMEOUT_MS = parseInt(process.env.TIMEOUT_MS, 10) || 15000;
+
 export const ALLOWED_UPDATES = [
   'message:text',
   'message:audio',
