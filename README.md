@@ -31,6 +31,16 @@ npm start
 
 Uses `BOT_TOKEN` by default.
 
+### PM2 Commands
+
+```bash
+pm2 stop pdf      # Stop the bot
+pm2 start pdf     # Start the bot
+pm2 restart pdf   # Restart the bot
+pm2 logs pdf      # View logs
+pm2 status        # Check status
+```
+
 ## Deploy
 
 Deployment is automated via GitHub Actions and triggered by publishing a release.
