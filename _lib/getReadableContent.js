@@ -1,5 +1,6 @@
 import { addQueryRules, extract, setRequestOptions } from 'article-parser';
 import { NetworkError, ParseError, CancelledError } from './errors.js';
+import { getFromCache, setInCache } from './cache.js';
 
 const extraCleaning = (document) => {
   document.querySelectorAll('img').forEach((img) => {
@@ -34,20 +35,36 @@ export const getReadableContent = async (url, signal) => {
     throw new CancelledError();
   }
 
+  const cached = getFromCache(url);
+  if (cached) {
+    console.log('Cache hit:', url);
+    if (cached.error) {
+      throw cached.error;
+    }
+    return cached.content;
+  }
+
   try {
     const readableContent = await parse(url, signal);
 
     if (!readableContent || !readableContent.content) {
-      throw new ParseError('No content extracted', url);
+      const error = new ParseError('No content extracted', url);
+      setInCache(url, { error });
+      throw error;
     }
 
+    setInCache(url, { content: readableContent });
     return readableContent;
   } catch (error) {
     if (signal?.aborted || error.name === 'AbortError') {
       throw new CancelledError();
     }
 
-    if (error.name === 'CancelledError' || error.name === 'ParseError') {
+    if (error.name === 'CancelledError') {
+      throw error;
+    }
+
+    if (error.name === 'ParseError') {
       throw error;
     }
 
@@ -62,6 +79,8 @@ export const getReadableContent = async (url, signal) => {
       throw new NetworkError(error.message, url);
     }
 
-    throw new ParseError(error.message, url);
+    const parseError = new ParseError(error.message, url);
+    setInCache(url, { error: parseError });
+    throw parseError;
   }
 };
