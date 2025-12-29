@@ -12,7 +12,7 @@ export const ALLOWED_UPDATES = [
   'message:contact',
   'message:location',
   'message:venue',
-  'message:forward_date',
+  'message:forward_origin',
 ];
 
 export const PAGE_STYLE = `
