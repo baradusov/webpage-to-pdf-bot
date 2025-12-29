@@ -1,8 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.26.0
+* Use HEAD request to check content-type before processing URLs
+* Reject non-HTML content (videos, images, documents) to prevent abuse
+
 ## 0.25.3
-* Reject non-HTML URLs (videos, images, documents) to prevent abuse
+* Reject non-HTML URLs by file extension (superseded by 0.26.0)
 
 ## 0.25.2
 * Fix forward_date filter renamed to forward_origin in grammy v1.38
