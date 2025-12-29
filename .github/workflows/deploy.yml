@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            source ~/.nvm/nvm.sh
+            source ~/.asdf/asdf.sh
             cd ~/www/webpage-to-pdf-bot/app
             git pull origin master
             npm ci
