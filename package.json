@@ -1,6 +1,6 @@
 {
   "name": "webpage-to-pdf-bot",
-  "version": "0.24.0",
+  "version": "0.25.0",
   "description": "Bot can help to save web article as a readable pdf file",
   "main": "index.js",
   "type": "module",
@@ -20,10 +20,10 @@
     "url": "https://github.com/baradusov/webpage-to-pdf-bot.git"
   },
   "dependencies": {
-    "@grammyjs/transformer-throttler": "^1.1.2",
-    "article-parser": "^6.0.0",
-    "dotenv": "^16.0.0",
-    "grammy": "^1.8.2",
+    "@extractus/article-extractor": "^8.0.20",
+    "@grammyjs/transformer-throttler": "^1.2.1",
+    "dotenv": "^17.2.3",
+    "grammy": "^1.38.4",
     "puppeteer": "^24.34.0"
   }
 }

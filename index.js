@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ quiet: true });
 
 import { Bot, InputFile } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';

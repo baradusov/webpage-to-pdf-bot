@@ -1,6 +1,13 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.25.0
+* Update all dependencies to latest versions
+* Migrate from article-parser to @extractus/article-extractor
+* Upgrade grammy from 1.8.2 to 1.38.4
+* Upgrade dotenv from 16.0.0 to 17.2.3
+* Require Node.js >= 20
+
 ## 0.24.0
 * Source asdf in deploy script for non-interactive SSH
 

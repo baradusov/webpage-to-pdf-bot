@@ -1,22 +1,14 @@
-import { addQueryRules, extract, setRequestOptions } from 'article-parser';
+import { extract } from '@extractus/article-extractor';
 import { NetworkError, ParseError, CancelledError } from './errors.js';
 import { getFromCache, setInCache } from './cache.js';
 
-const extraCleaning = (document) => {
-  document.querySelectorAll('img').forEach((img) => {
-    img.removeAttribute('loading');
-  });
-
-  return document;
+const removeLoadingAttributes = (html) => {
+  if (!html) return html;
+  return html.replace(/\s+loading=["'][^"']*["']/gi, '');
 };
 
 const parse = async (url, signal) => {
-  addQueryRules([
-    {
-      tranform: extraCleaning,
-    },
-  ]);
-  setRequestOptions({
+  const article = await extract(url, {}, {
     headers: {
       'user-agent':
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
@@ -25,7 +17,9 @@ const parse = async (url, signal) => {
     signal,
   });
 
-  const article = await extract(url);
+  if (article && article.content) {
+    article.content = removeLoadingAttributes(article.content);
+  }
 
   return article;
 };
