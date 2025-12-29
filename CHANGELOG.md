@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.25.3
+* Reject non-HTML URLs (videos, images, documents) to prevent abuse
+
 ## 0.25.2
 * Fix forward_date filter renamed to forward_origin in grammy v1.38
 
