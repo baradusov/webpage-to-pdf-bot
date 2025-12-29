@@ -58,11 +58,13 @@ pm2 restart pdf
 Automated deployment is triggered by publishing a release.
 
 Before creating release:
-1. Update version in `package.json`
-2. Run `npm install` to update `package-lock.json`
-3. Update `CHANGELOG.md`
-4. Commit with message: `release X.X.X`
-5. Push to master
+1. Commit all code changes first (separate commit)
+2. Then prepare release commit:
+   - Update version in `package.json`
+   - Run `npm install` to update `package-lock.json`
+   - Update `CHANGELOG.md`
+   - Commit with message: `release X.X.X`
+3. Push to master
 
 Create release:
 1. Go to GitHub repository → Releases → "Create a new release"
