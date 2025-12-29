@@ -66,7 +66,7 @@ Before creating release:
 
 Create release:
 1. Go to GitHub repository → Releases → "Create a new release"
-2. Create a new tag (e.g., `v0.19.5`)
+2. Create a new tag (e.g., `0.19.5`)
 3. Fill in release title and description
 4. Click "Publish release"
 
