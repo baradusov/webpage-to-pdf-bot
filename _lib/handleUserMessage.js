@@ -1,6 +1,24 @@
 import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
 import { CancelledError, getUserMessage } from './errors.js';
 
+const NON_HTML_EXTENSIONS = [
+  '.mp4', '.webm', '.avi', '.mov', '.mkv', '.flv', '.wmv', '.m4v',
+  '.mp3', '.wav', '.ogg', '.flac', '.aac', '.wma', '.m4a',
+  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.ico',
+  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+  '.zip', '.rar', '.7z', '.tar', '.gz',
+  '.exe', '.dmg', '.apk', '.iso',
+];
+
+const isNonHtmlUrl = (url) => {
+  try {
+    const pathname = new URL(url).pathname.toLowerCase();
+    return NON_HTML_EXTENSIONS.some((ext) => pathname.endsWith(ext));
+  } catch {
+    return false;
+  }
+};
+
 export const handleUserMessage = async ({ message }, signal) => {
   try {
     const urls = getUrls(message);
@@ -13,6 +31,15 @@ export const handleUserMessage = async ({ message }, signal) => {
     }
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+
+    if (isNonHtmlUrl(url)) {
+      console.log('Rejected non-HTML url:', url);
+      return {
+        pdf: false,
+        message: "I can only process web pages, not media files 🙅",
+      };
+    }
+
     console.log('Started processing url:', url);
     const readableContent = await getReadableContent(url, signal);
 
