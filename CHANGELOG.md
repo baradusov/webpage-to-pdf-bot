@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.23.0
+* Add Tailscale to GitHub Actions deploy workflow
+
 ## 0.22.0
 * Upgrade Puppeteer from 13.7.0 to 24.34.0
 * Reduce vulnerabilities from 12 to 7

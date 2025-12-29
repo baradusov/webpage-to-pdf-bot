@@ -72,6 +72,8 @@ Create release:
 
 ### Required GitHub secrets
 
-- `SSH_HOST` - server hostname or IP
+- `TS_OAUTH_CLIENT_ID` - Tailscale OAuth client ID
+- `TS_OAUTH_SECRET` - Tailscale OAuth client secret
+- `SSH_HOST` - server Tailscale IP or hostname
 - `SSH_USERNAME` - SSH user
 - `SSH_KEY` - private SSH key for authentication

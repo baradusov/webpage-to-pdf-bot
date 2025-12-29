@@ -9,6 +9,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
       - name: Deploy app
         uses: appleboy/ssh-action@master
         with:
@@ -16,7 +23,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /var/www/pdf.baradusov.ru/app/
+            cd ~/www/webpage-to-pdf-bot/app
             git pull origin master
             npm ci
-            pm2 restart /var/pm2-config/ecosystem.config.js --only pdf --env production --time
+            pm2 restart pdf
