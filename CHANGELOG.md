@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.25.1
+* Clarify release process in README
+
 ## 0.25.0
 * Update all dependencies to latest versions
 * Migrate from article-parser to @extractus/article-extractor
