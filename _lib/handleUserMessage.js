@@ -1,21 +1,28 @@
 import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
 import { CancelledError, getUserMessage } from './errors.js';
 
-const NON_HTML_EXTENSIONS = [
-  '.mp4', '.webm', '.avi', '.mov', '.mkv', '.flv', '.wmv', '.m4v',
-  '.mp3', '.wav', '.ogg', '.flac', '.aac', '.wma', '.m4a',
-  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.ico',
-  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
-  '.zip', '.rar', '.7z', '.tar', '.gz',
-  '.exe', '.dmg', '.apk', '.iso',
-];
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
 
-const isNonHtmlUrl = (url) => {
+const checkContentType = async (url, signal) => {
   try {
-    const pathname = new URL(url).pathname.toLowerCase();
-    return NON_HTML_EXTENSIONS.some((ext) => pathname.endsWith(ext));
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: signal || controller.signal,
+      headers: { 'user-agent': USER_AGENT },
+    });
+
+    clearTimeout(timeout);
+
+    const contentType = response.headers.get('content-type') || '';
+    return {
+      isHtml: contentType.includes('text/html') || contentType.includes('text/plain'),
+      contentType,
+    };
   } catch {
-    return false;
+    return { isHtml: true, contentType: 'unknown' };
   }
 };
 
@@ -32,8 +39,10 @@ export const handleUserMessage = async ({ message }, signal) => {
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
 
-    if (isNonHtmlUrl(url)) {
-      console.log('Rejected non-HTML url:', url);
+    const { isHtml, contentType } = await checkContentType(url, signal);
+
+    if (!isHtml) {
+      console.log('Rejected non-HTML url:', url, 'Content-Type:', contentType);
       return {
         pdf: false,
         message: "I can only process web pages, not media files 🙅",
