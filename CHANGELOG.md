@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.24.0
+* Source asdf in deploy script for non-interactive SSH
+
 ## 0.23.0
 * Add Tailscale to GitHub Actions deploy workflow
 
