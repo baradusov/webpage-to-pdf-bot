@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.27.0
+* Handle 413 error (file too large) with user-friendly message
+* Fix bot hanging when error reply fails due to network issues
+
 ## 0.26.0
 * Use HEAD request to check content-type before processing URLs
 * Reject non-HTML content (videos, images, documents) to prevent abuse

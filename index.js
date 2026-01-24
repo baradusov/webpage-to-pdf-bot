@@ -105,7 +105,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
   return ctx.reply(BOT_REPLIES.limit);
 });
 
-bot.catch((reason) => {
+bot.catch(async (reason) => {
   const { error, ctx } = reason;
 
   // Forbidden: bot was blocked by the user
@@ -118,12 +118,28 @@ bot.catch((reason) => {
     return console.error('Bad request:', error.description);
   }
 
+  // Request Entity Too Large: PDF file is too big for Telegram
+  if (error.error_code === 413) {
+    console.error('File too large:', error.description);
+    try {
+      return await ctx.reply('The PDF file is too large to send (max 50 MB). Try a shorter article.', {
+        reply_to_message_id: ctx.message?.message_id,
+      });
+    } catch (replyError) {
+      return console.error('Failed to send error message:', replyError.message);
+    }
+  }
+
   console.error('Unhandled error:', error.name, error.message);
 
   const userMessage = getUserMessage(error);
-  return ctx.reply(userMessage, {
-    reply_to_message_id: ctx.message?.message_id,
-  });
+  try {
+    return await ctx.reply(userMessage, {
+      reply_to_message_id: ctx.message?.message_id,
+    });
+  } catch (replyError) {
+    console.error('Failed to send error message:', replyError.message);
+  }
 });
 
 bot.start();
