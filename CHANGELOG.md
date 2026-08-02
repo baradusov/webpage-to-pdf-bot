@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.30.3
+* Spend the rate limit only on messages that carry a link. The bot reads every message in a group, so ordinary conversation was draining the allowance and a real link could then be refused
+
 ## 0.30.2
 * Give up on an update after three tries. A crash before the update was confirmed made Telegram redeliver it forever — the pattern goes back to 2023 and cost whole days of downtime, most recently 267 restarts in two hours. The count is on disk, so it survives the restart it exists to stop
 * Lower the page ceiling from 5 MB to 2 MB. Parsing costs roughly 150 MB of memory per MB of HTML, so a 5 MB page still peaked near 590 MB and was killed by the 400 MB limit — the ceiling was too high to prevent the very loop it was added for. The heaviest article in a month of real traffic was 0.75 MB

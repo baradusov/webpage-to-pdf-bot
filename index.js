@@ -29,6 +29,8 @@ const survivesRetries = (ctx) => {
 };
 
 const passesRateLimit = (ctx) => {
+  if (!getUrls(ctx.message)) return true;
+
   const gate = take(ctx.chat.id);
 
   if (gate.allowed) return true;
