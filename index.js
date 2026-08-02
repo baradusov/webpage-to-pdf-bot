@@ -27,7 +27,7 @@ bot.command('start', (ctx) => {
 bot.command('help', (ctx) => {
   return ctx.reply(BOT_REPLIES.helpCommand, {
     parse_mode: 'HTML',
-    disable_web_page_preview: true,
+    link_preview_options: { is_disabled: true },
   });
 });
 
