@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.28.2
+* Skip the chrome-headless-shell download — the bot launches with `headless: true`, which uses the full Chrome binary, so the shell was 262 MB fetched on every install and never run
+
 ## 0.28.1
 * Disable the link preview in /help with `link_preview_options`; `disable_web_page_preview` has been gone from the Bot API since 7.0 and was silently doing nothing
 
