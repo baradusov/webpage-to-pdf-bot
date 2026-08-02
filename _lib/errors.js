@@ -31,6 +31,18 @@ export class ParseError extends BotError {
   }
 }
 
+export class TooLargeError extends BotError {
+  constructor(message, url) {
+    super(
+      message,
+      'That page is too big for me to read 🙅 Send me a link to an article instead.',
+      false
+    );
+    this.name = 'TooLargeError';
+    this.url = url;
+  }
+}
+
 export class BrowserError extends BotError {
   constructor(message, url) {
     super(

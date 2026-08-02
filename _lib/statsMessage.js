@@ -20,6 +20,7 @@ const REASON_LABELS = {
   bad_url: 'Malformed address',
   dns_failed: 'Site not found',
   rate_limited: 'Sent too fast',
+  TooLargeError: 'Page too big to read',
   ParseError: 'Could not parse the page',
   NetworkError: 'Network did not answer',
   TimeoutError: 'Took too long',

@@ -1,6 +1,7 @@
-import { extract } from '@extractus/article-extractor';
+import { extractFromHtml } from '@extractus/article-extractor';
 import { NetworkError, ParseError, CancelledError } from './errors.js';
 import { getFromCache, setInCache } from './cache.js';
+import { fetchHtml } from './fetchHtml.js';
 
 const removeLoadingAttributes = (html) => {
   if (!html) return html;
@@ -8,14 +9,8 @@ const removeLoadingAttributes = (html) => {
 };
 
 const parse = async (url, signal) => {
-  const article = await extract(url, {}, {
-    headers: {
-      'user-agent':
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',
-      accept: 'text/html; charset=utf-8',
-    },
-    signal,
-  });
+  const html = await fetchHtml(url, signal);
+  const article = await extractFromHtml(html, url);
 
   if (article && article.content) {
     article.content = removeLoadingAttributes(article.content);
@@ -58,7 +53,13 @@ export const getReadableContent = async (url, signal) => {
       throw error;
     }
 
-    if (error.name === 'ParseError') {
+    if (error.name === 'ParseError' || error.name === 'NetworkError') {
+      throw error;
+    }
+
+    // Cached so a redelivered update is refused without downloading again.
+    if (error.name === 'TooLargeError') {
+      setInCache(url, { error });
       throw error;
     }
 
