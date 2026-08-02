@@ -1,6 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.30.1
+* Refuse pages over 5 MB. A 44 MB page of admissions lists became about a gigabyte of DOM, the process was killed before it could confirm the update, and Telegram redelivered it — the bot restarted every 30 seconds for two hours
+* Download the page directly with a byte ceiling instead of letting the extractor fetch it, so a missing or dishonest `Content-Length` cannot get past the limit
+* Cache the refusal, so a redelivered link is turned away without downloading again
+
 ## 0.30.0
 * Refuse addresses that are not reachable from the internet — loopback, private ranges, link-local, cloud metadata and CGNAT. `/full` would otherwise render internal pages and send them back as a PDF
 * Resolve the hostname before judging it, so a public name pointing at a private address is caught too
