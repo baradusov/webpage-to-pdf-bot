@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.28.1
+* Disable the link preview in /help with `link_preview_options`; `disable_web_page_preview` has been gone from the Bot API since 7.0 and was silently doing nothing
+
 ## 0.28.0
 * Update puppeteer to 25.4.0 (major), grammy to 1.45.1, @extractus/article-extractor to 8.1.0, dotenv to 17.4.2
 * Require Node.js >= 22.12.0 (puppeteer 25 dropped support for older versions)
