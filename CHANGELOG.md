@@ -1,6 +1,13 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.30.0
+* Refuse addresses that are not reachable from the internet — loopback, private ranges, link-local, cloud metadata and CGNAT. `/full` would otherwise render internal pages and send them back as a PDF
+* Resolve the hostname before judging it, so a public name pointing at a private address is caught too
+* Refuse links from sites that never yield an article before making any network call — 15% of a month's traffic was guaranteed to fail after a wasted fetch
+* Limit how fast one chat can be served, so a single sender cannot occupy the queue for everyone else
+* Record how long a message waited before work began, alongside how long the work took
+
 ## 0.29.0
 * Record every handled message in SQLite through the built-in `node:sqlite` — chat id, domain, outcome, failure reason, how long the person waited, and a timestamp, with no new dependencies
 * Store the domain rather than the full address, so product questions can be answered without keeping a per-person reading history
