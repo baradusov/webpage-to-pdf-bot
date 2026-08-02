@@ -34,6 +34,7 @@ export const handleUserMessage = async ({ message }, signal) => {
       return {
         pdf: false,
         message: "It doesn't seem to be a link 🤔",
+        reason: 'not_a_link',
       };
     }
 
@@ -46,6 +47,7 @@ export const handleUserMessage = async ({ message }, signal) => {
       return {
         pdf: false,
         message: "I can only process web pages, not media files 🙅",
+        reason: 'not_html',
       };
     }
 
@@ -60,6 +62,7 @@ export const handleUserMessage = async ({ message }, signal) => {
       return {
         pdf: false,
         message: "Can't get the content from the link 😞",
+        reason: 'no_content',
       };
     }
 
@@ -81,6 +84,7 @@ export const handleUserMessage = async ({ message }, signal) => {
       pdf: false,
       message: getUserMessage(error),
       errorType: error.name,
+      reason: error.name,
       isRetryable: error.isRetryable,
     };
   }

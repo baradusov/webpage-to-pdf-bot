@@ -6,6 +6,8 @@ import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls, getUserMessage } from './_lib/index.js';
 import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
 import { generateScreenshot } from './_lib/generateScreenshot.js';
+import { record } from './_lib/stats.js';
+import { buildStatsMessage } from './_lib/statsMessage.js';
 
 const BOT_TOKEN =
   process.env.NODE_ENV == 'development'
@@ -31,6 +33,23 @@ bot.command('help', (ctx) => {
   });
 });
 
+// Команда намеренно не объявлена в меню бота: она только для админа.
+// Всем остальным бот молчит, чтобы не выдавать её существование.
+bot.command('stats', async (ctx) => {
+  const admin = process.env.ADMIN_CHAT_ID;
+
+  if (!admin || String(ctx.chat.id) !== String(admin)) {
+    return;
+  }
+
+  // Период приходит из сообщения: в SQL он попадает только как параметр
+  // подготовленного запроса, но диапазон всё равно ограничим.
+  const period = Math.min(Math.max(parseInt(ctx.match, 10) || 30, 1), 3650);
+
+  // Аргументы позиционные: объектная форма живёт в ctx.api.raw.
+  return ctx.api.sendRichMessage(ctx.chat.id, buildStatsMessage(period));
+});
+
 bot.command('full', async (ctx) => {
   const urls = getUrls(ctx.message);
 
@@ -40,6 +59,7 @@ bot.command('full', async (ctx) => {
 
     console.log(`Starting to screenshot: ${url}.`);
 
+    const startedAt = Date.now();
     const data = await handleTimeout((signal) => generateScreenshot(url, signal), TIMEOUT_MS);
 
     if (data.error) {
@@ -49,6 +69,7 @@ bot.command('full', async (ctx) => {
     }
 
     console.log(`Screenshot was made for url: ${url}.`);
+    record(ctx.chat.id, url, 'full', null, Date.now() - startedAt);
 
     return ctx.replyWithDocument(
       new InputFile(data.screenshot, `${data.name.trim()}.pdf`),
@@ -63,7 +84,8 @@ bot.command('full', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (process.env.BOT_STATUS !== 'disabled') {
-    const { pdf, name, message, errorType } = await handleTimeout(
+    const startedAt = Date.now();
+    const { pdf, name, message, errorType, reason } = await handleTimeout(
       (signal) => handleUserMessage(ctx, signal),
       TIMEOUT_MS
     );
@@ -78,6 +100,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       await ctx.replyWithChatAction('upload_document');
 
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
+      record(ctx.chat.id, getUrls(ctx.message)[0], 'pdf', null, Date.now() - startedAt);
 
       return ctx.replyWithDocument(new InputFile(pdf, `${name.trim()}.pdf`), {
         reply_to_message_id: ctx.message.message_id,
@@ -92,6 +115,13 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
 
       console.log(
         `No pdf generated for: ${ctx.message.text}. Reason: ${message}`
+      );
+      record(
+        ctx.chat.id,
+        getUrls(ctx.message)?.[0],
+        'failed',
+        reason || errorType || 'unknown',
+        Date.now() - startedAt
       );
 
       return ctx.reply(message, {
