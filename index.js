@@ -107,9 +107,10 @@ bot.command('full', async (ctx) => {
 
     console.log(`Starting to screenshot: ${url}.`);
 
-    const status = await startProgress(ctx, BOT_REPLIES.capturing);
+    const progress = startProgress(ctx, BOT_REPLIES.capturing);
     const startedAt = Date.now();
     const data = await handleTimeout((signal) => generateScreenshot(url, signal), TIMEOUT_MS);
+    const status = await progress.settle();
 
     if (data.error) {
       return failWith(ctx, status, data.message);
@@ -130,8 +131,8 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     if (!passesRateLimit(ctx)) return;
     if (!survivesRetries(ctx)) return;
 
-    const status = getUrls(ctx.message)
-      ? await startProgress(ctx, BOT_REPLIES.working)
+    const progress = getUrls(ctx.message)
+      ? startProgress(ctx, BOT_REPLIES.working)
       : null;
     const startedAt = Date.now();
     const queuedMs = ctx.message?.date
@@ -141,6 +142,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       (signal) => handleUserMessage(ctx, signal),
       TIMEOUT_MS
     );
+    const status = progress ? await progress.settle() : null;
 
     if (pdf) {
       if (message) {

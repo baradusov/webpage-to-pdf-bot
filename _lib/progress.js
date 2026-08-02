@@ -1,12 +1,26 @@
 import { InputFile } from 'grammy';
 
-export const startProgress = (ctx, text) =>
-  ctx
-    .reply(text, { reply_to_message_id: ctx.message.message_id })
-    .catch((error) => {
-      console.error('Progress notice failed:', error.message);
-      return null;
-    });
+const DELAY_MS = Number(process.env.PROGRESS_DELAY_MS) || 600;
+
+export const startProgress = (ctx, text, delayMs = DELAY_MS) => {
+  let sending = null;
+
+  const timer = setTimeout(() => {
+    sending = ctx
+      .reply(text, { reply_to_message_id: ctx.message.message_id })
+      .catch((error) => {
+        console.error('Progress notice failed:', error.message);
+        return null;
+      });
+  }, delayMs);
+
+  return {
+    async settle() {
+      clearTimeout(timer);
+      return sending ? sending : null;
+    },
+  };
+};
 
 export const finishWithDocument = async (ctx, status, buffer, filename) => {
   if (status) {

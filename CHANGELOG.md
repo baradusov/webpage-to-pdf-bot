@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.31.0
+* Answer with a progress message and replace it with the PDF when it is ready. The chat action was sent after the work was already done, so people sat through three seconds of silence and resent their links
+* Hold the progress message back for 600 ms, so answers that come instantly — a refused site, a malformed link — arrive without a status flashing first
+
 ## 0.30.3
 * Spend the rate limit only on messages that carry a link. The bot reads every message in a group, so ordinary conversation was draining the allowance and a real link could then be refused
 
