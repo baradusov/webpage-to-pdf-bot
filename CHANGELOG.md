@@ -2,47 +2,46 @@
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 0.31.0
-* Answer with a progress message and replace it with the PDF when it is ready. The chat action was sent after the work was already done, so people sat through three seconds of silence and resent their links
-* Hold the progress message back for 600 ms, so answers that come instantly — a refused site, a malformed link — arrive without a status flashing first
+* Show a progress message and replace it with the PDF when ready
+* Skip the progress message when the answer is instant
 
 ## 0.30.3
-* Spend the rate limit only on messages that carry a link. The bot reads every message in a group, so ordinary conversation was draining the allowance and a real link could then be refused
+* Spend the rate limit only on messages that carry a link
 
 ## 0.30.2
-* Give up on an update after three tries. A crash before the update was confirmed made Telegram redeliver it forever — the pattern goes back to 2023 and cost whole days of downtime, most recently 267 restarts in two hours. The count is on disk, so it survives the restart it exists to stop
-* Lower the page ceiling from 5 MB to 2 MB. Parsing costs roughly 150 MB of memory per MB of HTML, so a 5 MB page still peaked near 590 MB and was killed by the 400 MB limit — the ceiling was too high to prevent the very loop it was added for. The heaviest article in a month of real traffic was 0.75 MB
+* Give up on an update after three failed tries
+* Lower the page size limit from 5 MB to 2 MB
 
 ## 0.30.1
-* Refuse pages over 5 MB. A 44 MB page of admissions lists became about a gigabyte of DOM, the process was killed before it could confirm the update, and Telegram redelivered it — the bot restarted every 30 seconds for two hours
-* Download the page directly with a byte ceiling instead of letting the extractor fetch it, so a missing or dishonest `Content-Length` cannot get past the limit
-* Cache the refusal, so a redelivered link is turned away without downloading again
+* Refuse pages over 5 MB
+* Download pages with a byte limit instead of trusting Content-Length
+* Cache the refusal so a redelivered link costs nothing
 
 ## 0.30.0
-* Refuse addresses that are not reachable from the internet — loopback, private ranges, link-local, cloud metadata and CGNAT. `/full` would otherwise render internal pages and send them back as a PDF
-* Resolve the hostname before judging it, so a public name pointing at a private address is caught too
-* Refuse links from sites that never yield an article before making any network call — 15% of a month's traffic was guaranteed to fail after a wasted fetch
-* Limit how fast one chat can be served, so a single sender cannot occupy the queue for everyone else
-* Record how long a message waited before work began, alongside how long the work took
+* Refuse addresses not reachable from the internet
+* Resolve hostnames before checking them
+* Refuse sites that never yield an article, before fetching
+* Limit how fast one chat can be served
+* Record how long a message waited in the queue
 
 ## 0.29.0
-* Record every handled message in SQLite through the built-in `node:sqlite` — chat id, domain, outcome, failure reason, how long the person waited, and a timestamp, with no new dependencies
-* Store the domain rather than the full address, so product questions can be answered without keeping a per-person reading history
-* Add helpers for the numbers the logs could never give: user count, top users, returning users, response-time percentiles, slowest domains
-* Add an admin-only `/stats` command that replies with tables via Bot API rich messages; it is absent from the command menu and silent for everyone else
-* Report failure reasons as codes rather than user-facing strings, so they stay countable
-* Add tests for the statistics layer and the message builder
+* Record usage in SQLite via node:sqlite
+* Store the domain instead of the full URL
+* Add admin-only /stats command with tables
+* Report failure reasons as codes instead of user-facing strings
+* Add tests for the statistics layer
 
 ## 0.28.2
-* Skip the chrome-headless-shell download — the bot launches with `headless: true`, which uses the full Chrome binary, so the shell was 262 MB fetched on every install and never run
+* Skip the chrome-headless-shell download
 
 ## 0.28.1
-* Disable the link preview in /help with `link_preview_options`; `disable_web_page_preview` has been gone from the Bot API since 7.0 and was silently doing nothing
+* Disable the /help link preview with link_preview_options
 
 ## 0.28.0
-* Update puppeteer to 25.4.0 (major), grammy to 1.45.1, @extractus/article-extractor to 8.1.0, dotenv to 17.4.2
-* Require Node.js >= 22.12.0 (puppeteer 25 dropped support for older versions)
+* Update puppeteer to 25.4.0, grammy to 1.45.1, article-extractor to 8.1.0, dotenv to 17.4.2
+* Require Node.js >= 22.12.0
 * Pin Node.js version via .tool-versions
-* Drop cosmiconfig dependency chain along with puppeteer 25, removing a high-severity js-yaml advisory
+* Drop cosmiconfig chain and its js-yaml advisory
 
 ## 0.27.0
 * Handle 413 error (file too large) with user-friendly message
