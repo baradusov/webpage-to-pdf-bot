@@ -4,7 +4,8 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 
 ## Requirements
 
-- Node.js
+- Node.js >= 22.12.0 (required by puppeteer 25)
+- `unzip` — puppeteer extracts the bundled Chrome with it during `npm ci`
 
 ## Environment Variables
 
