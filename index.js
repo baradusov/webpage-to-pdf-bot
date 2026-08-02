@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config({ quiet: true });
 
-import { Bot, InputFile } from 'grammy';
+import { Bot } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls, getUserMessage } from './_lib/index.js';
 import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
@@ -11,6 +11,7 @@ import { buildStatsMessage } from './_lib/statsMessage.js';
 import { checkUrl } from './_lib/checkUrl.js';
 import { take } from './_lib/rateLimit.js';
 import { startAttempt, finishAttempt } from './_lib/attempts.js';
+import { startProgress, finishWithDocument, failWith } from './_lib/progress.js';
 
 const survivesRetries = (ctx) => {
   const { tries, giveUp } = startAttempt(ctx.update.update_id);
@@ -106,25 +107,19 @@ bot.command('full', async (ctx) => {
 
     console.log(`Starting to screenshot: ${url}.`);
 
+    const status = await startProgress(ctx, BOT_REPLIES.capturing);
     const startedAt = Date.now();
     const data = await handleTimeout((signal) => generateScreenshot(url, signal), TIMEOUT_MS);
 
     if (data.error) {
-      return ctx.reply(data.message, {
-        reply_to_message_id: ctx.message.message_id,
-      });
+      return failWith(ctx, status, data.message);
     }
 
     console.log(`Screenshot was made for url: ${url}.`);
     record(ctx.chat.id, url, 'full', null, Date.now() - startedAt);
     finishAttempt(ctx.update.update_id);
 
-    return ctx.replyWithDocument(
-      new InputFile(data.screenshot, `${data.name.trim()}.pdf`),
-      {
-        reply_to_message_id: ctx.message.message_id,
-      }
-    );
+    return finishWithDocument(ctx, status, data.screenshot, `${data.name.trim()}.pdf`);
   }
 
   return ctx.reply('No url provided.');
@@ -135,6 +130,9 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
     if (!passesRateLimit(ctx)) return;
     if (!survivesRetries(ctx)) return;
 
+    const status = getUrls(ctx.message)
+      ? await startProgress(ctx, BOT_REPLIES.working)
+      : null;
     const startedAt = Date.now();
     const queuedMs = ctx.message?.date
       ? Math.max(0, startedAt - ctx.message.date * 1000)
@@ -151,8 +149,6 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
         });
       }
 
-      await ctx.replyWithChatAction('upload_document');
-
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
       record(
         ctx.chat.id,
@@ -164,9 +160,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       );
       finishAttempt(ctx.update.update_id);
 
-      return ctx.replyWithDocument(new InputFile(pdf, `${name.trim()}.pdf`), {
-        reply_to_message_id: ctx.message.message_id,
-      });
+      return finishWithDocument(ctx, status, pdf, `${name.trim()}.pdf`);
     }
 
     if (isPrivateChat(ctx)) {
@@ -188,9 +182,7 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       );
       finishAttempt(ctx.update.update_id);
 
-      return ctx.reply(message, {
-        reply_to_message_id: ctx.message.message_id,
-      });
+      return failWith(ctx, status, message);
     }
 
     return ctx;

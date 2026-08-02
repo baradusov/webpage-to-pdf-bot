@@ -41,6 +41,8 @@ If you have any questions, suggestions, comments or something not working, feel 
 /help — shows this message`,
   limit:
     'The bot is disabled indefinitely. Check out @baradusov_support for more info.',
+  working: '⏳ Making your PDF…',
+  capturing: '⏳ Taking a screenshot…',
   gaveUp:
     "I tried this link a few times and it keeps breaking me, so I'm skipping it 🙅 Sorry about that.",
   tooFast:
