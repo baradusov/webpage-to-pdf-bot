@@ -1,6 +1,14 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.29.0
+* Record every handled message in SQLite through the built-in `node:sqlite` — chat id, domain, outcome, failure reason, how long the person waited, and a timestamp, with no new dependencies
+* Store the domain rather than the full address, so product questions can be answered without keeping a per-person reading history
+* Add helpers for the numbers the logs could never give: user count, top users, returning users, response-time percentiles, slowest domains
+* Add an admin-only `/stats` command that replies with tables via Bot API rich messages; it is absent from the command menu and silent for everyone else
+* Report failure reasons as codes rather than user-facing strings, so they stay countable
+* Add tests for the statistics layer and the message builder
+
 ## 0.28.2
 * Skip the chrome-headless-shell download — the bot launches with `headless: true`, which uses the full Chrome binary, so the shell was 262 MB fetched on every install and never run
 
