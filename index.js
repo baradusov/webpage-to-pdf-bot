@@ -8,6 +8,28 @@ import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
 import { generateScreenshot } from './_lib/generateScreenshot.js';
 import { record } from './_lib/stats.js';
 import { buildStatsMessage } from './_lib/statsMessage.js';
+import { checkUrl } from './_lib/checkUrl.js';
+import { take } from './_lib/rateLimit.js';
+
+const passesRateLimit = (ctx) => {
+  const gate = take(ctx.chat.id);
+
+  if (gate.allowed) return true;
+
+  // Once per cooldown, so a flood does not write thousands of rows.
+  if (gate.notify) {
+    console.log(`Rate limited: ${ctx.chat.id}`);
+    record(ctx.chat.id, getUrls(ctx.message)?.[0], 'rate_limited', 'rate_limited');
+
+    // Not awaited: a refusal has to stay cheap. Caught so a blocked chat
+    // cannot crash the process.
+    ctx.reply(BOT_REPLIES.tooFast, {
+      reply_to_message_id: ctx.message.message_id,
+    }).catch((error) => console.error('Rate limit notice failed:', error.message));
+  }
+
+  return false;
+};
 
 const BOT_TOKEN =
   process.env.NODE_ENV == 'development'
@@ -33,8 +55,7 @@ bot.command('help', (ctx) => {
   });
 });
 
-// Команда намеренно не объявлена в меню бота: она только для админа.
-// Всем остальным бот молчит, чтобы не выдавать её существование.
+// Deliberately absent from the command menu, and silent for non-admins.
 bot.command('stats', async (ctx) => {
   const admin = process.env.ADMIN_CHAT_ID;
 
@@ -42,20 +63,31 @@ bot.command('stats', async (ctx) => {
     return;
   }
 
-  // Период приходит из сообщения: в SQL он попадает только как параметр
-  // подготовленного запроса, но диапазон всё равно ограничим.
   const period = Math.min(Math.max(parseInt(ctx.match, 10) || 30, 1), 3650);
 
-  // Аргументы позиционные: объектная форма живёт в ctx.api.raw.
+  // Positional arguments — the object form lives on ctx.api.raw.
   return ctx.api.sendRichMessage(ctx.chat.id, buildStatsMessage(period));
 });
 
 bot.command('full', async (ctx) => {
+  if (!passesRateLimit(ctx)) return;
+
   const urls = getUrls(ctx.message);
 
   if (urls) {
     const firstUrl = urls[0];
     const url = !firstUrl.includes('://') ? `http://${firstUrl}` : firstUrl;
+
+    const allowed = await checkUrl(url);
+
+    if (!allowed.ok) {
+      console.log('Rejected url:', url, 'Reason:', allowed.reason);
+      record(ctx.chat.id, url, 'failed', allowed.reason);
+
+      return ctx.reply(allowed.message, {
+        reply_to_message_id: ctx.message.message_id,
+      });
+    }
 
     console.log(`Starting to screenshot: ${url}.`);
 
@@ -84,7 +116,13 @@ bot.command('full', async (ctx) => {
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
   if (process.env.BOT_STATUS !== 'disabled') {
+    if (!passesRateLimit(ctx)) return;
+
     const startedAt = Date.now();
+    // Telegram's receipt time, so the gap is how long it sat in the queue.
+    const queuedMs = ctx.message?.date
+      ? Math.max(0, startedAt - ctx.message.date * 1000)
+      : null;
     const { pdf, name, message, errorType, reason } = await handleTimeout(
       (signal) => handleUserMessage(ctx, signal),
       TIMEOUT_MS
@@ -100,7 +138,14 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
       await ctx.replyWithChatAction('upload_document');
 
       console.log(`PDF was generated for message: ${getUrls(ctx.message)[0]}.`);
-      record(ctx.chat.id, getUrls(ctx.message)[0], 'pdf', null, Date.now() - startedAt);
+      record(
+        ctx.chat.id,
+        getUrls(ctx.message)[0],
+        'pdf',
+        null,
+        Date.now() - startedAt,
+        queuedMs
+      );
 
       return ctx.replyWithDocument(new InputFile(pdf, `${name.trim()}.pdf`), {
         reply_to_message_id: ctx.message.message_id,
@@ -121,7 +166,8 @@ bot.on(ALLOWED_UPDATES, async (ctx) => {
         getUrls(ctx.message)?.[0],
         'failed',
         reason || errorType || 'unknown',
-        Date.now() - startedAt
+        Date.now() - startedAt,
+        queuedMs
       );
 
       return ctx.reply(message, {

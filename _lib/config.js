@@ -41,4 +41,6 @@ If you have any questions, suggestions, comments or something not working, feel 
 /help — shows this message`,
   limit:
     'The bot is disabled indefinitely. Check out @baradusov_support for more info.',
+  tooFast:
+    "That's a lot of links at once 😅 I make PDFs one at a time, so I didn't keep the extra ones — give me a minute and send them again.",
 };

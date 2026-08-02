@@ -7,18 +7,25 @@ import {
   returning,
   timings,
   slowestHosts,
+  queueTimings,
 } from './stats.js';
 
 const REASON_LABELS = {
-  not_a_link: 'Это не ссылка',
-  not_html: 'Не веб-страница',
-  no_content: 'Сайт не отдал текст',
-  ParseError: 'Не разобрали вёрстку',
-  NetworkError: 'Сеть не ответила',
-  TimeoutError: 'Слишком долго',
-  BrowserError: 'Ошибка браузера',
-  CancelledError: 'Отменено',
-  unknown: 'Прочее',
+  not_a_link: 'Not a link',
+  not_html: 'Not a web page',
+  no_content: 'Site returned no text',
+  never_articles: 'Site never yields an article',
+  private_address: 'Address not on the internet',
+  bad_scheme: 'Unsupported scheme',
+  bad_url: 'Malformed address',
+  dns_failed: 'Site not found',
+  rate_limited: 'Sent too fast',
+  ParseError: 'Could not parse the page',
+  NetworkError: 'Network did not answer',
+  TimeoutError: 'Took too long',
+  BrowserError: 'Browser error',
+  CancelledError: 'Cancelled',
+  unknown: 'Other',
 };
 
 const cell = (text, { header = false, align = 'left' } = {}) => {
@@ -39,53 +46,80 @@ const table = (head, rows) => ({
 
 const heading = (text) => ({ type: 'heading', text, size: 3 });
 
-const num = (n) => Number(n || 0).toLocaleString('ru-RU');
+const num = (n) => Number(n || 0).toLocaleString('en-US');
 
-const secs = (ms) => (ms == null ? '—' : (ms / 1000).toFixed(1) + ' с');
+const secs = (ms) => (ms == null ? '—' : (ms / 1000).toFixed(1) + 's');
 
-/** Собирает блоки rich-сообщения со статистикой за period дней. */
+/** Builds the rich-message blocks for the last `period` days. */
 export const buildStatsMessage = (period = 30) => {
   const s = summary(period);
-  const back = returning(period);
-  const rate = s.requests ? Math.round((s.pdf / s.requests) * 100) : 0;
+
+  if (!s.requests) {
+    return {
+      blocks: [
+        heading('Statistics'),
+        {
+          type: 'paragraph',
+          text: `Nothing recorded in the last ${period} days. Tracking starts with 0.29.0.`,
+        },
+      ],
+    };
+  }
+
+  const rate = Math.round((s.pdf / s.requests) * 100);
   const perUser = s.users ? (s.requests / s.users).toFixed(1) : '0';
   const full = outcomes(period).find((o) => o.outcome === 'full')?.count || 0;
 
   const blocks = [
-    heading(`Статистика · ${period} дней`),
+    heading(`Statistics · ${period} days`),
     table(
-      ['Показатель', 'Значение'],
+      ['Measure', 'Value'],
       [
-        ['Запросов', num(s.requests)],
-        ['Пользователей', num(s.users)],
-        ['Запросов на человека', perUser],
-        ['PDF отправлено', num(s.pdf)],
-        ['Доля успеха', rate + '%'],
-        ['Вернулись с прошлого периода', num(back)],
-        ['Вызовов /full', num(full)],
+        ['Requests', num(s.requests)],
+        ['People', num(s.users)],
+        ['Requests per person', perUser],
+        ['PDFs sent', num(s.pdf)],
+        ['Success rate', rate + '%'],
+        ['Returning from last period', num(returning(period))],
+        ['/full calls', num(full)],
       ]
     ),
   ];
 
   const t = timings(period);
   if (t.count) {
-    blocks.push(heading('Сколько ждут ответа'));
+    blocks.push(heading('How long it takes'));
     blocks.push(
       table(
-        ['Показатель', 'Время'],
+        ['Measure', 'Time'],
         [
-          ['Половина укладывается в', secs(t.median)],
-          ['Девять из десяти в', secs(t.p90)],
-          ['Самый долгий', secs(t.max)],
+          ['Half finish within', secs(t.median)],
+          ['Nine in ten within', secs(t.p90)],
+          ['Longest', secs(t.max)],
         ]
       )
     );
+
+    const q = queueTimings(period);
+    if (q.count) {
+      blocks.push(
+        table(
+          ['Waiting in the queue', 'Time'],
+          [
+            ['Half', secs(q.median)],
+            ['Nine in ten', secs(q.p90)],
+            ['Worst percent', secs(q.p99)],
+            ['Longest', secs(q.max)],
+          ]
+        )
+      );
+    }
 
     const slow = slowestHosts(period, 5);
     if (slow.length) {
       blocks.push(
         table(
-          ['Самые медленные домены', 'В среднем'],
+          ['Slowest sites', 'Average'],
           slow.map((h) => [h.host, secs(h.avgMs)])
         )
       );
@@ -94,10 +128,10 @@ export const buildStatsMessage = (period = 30) => {
 
   const users = topUsers(period, 10);
   if (users.length) {
-    blocks.push(heading('Кто чаще всех'));
+    blocks.push(heading('Who sends most'));
     blocks.push(
       table(
-        ['Чат', 'Запросов'],
+        ['Chat', 'Requests'],
         users.map((u) => [String(u.chatId), num(u.count)])
       )
     );
@@ -105,10 +139,10 @@ export const buildStatsMessage = (period = 30) => {
 
   const hosts = topHosts(period, 10);
   if (hosts.length) {
-    blocks.push(heading('Откуда ссылки'));
+    blocks.push(heading('Where links come from'));
     blocks.push(
       table(
-        ['Домен', 'Запросов'],
+        ['Site', 'Requests'],
         hosts.map((h) => [h.host, num(h.count)])
       )
     );
@@ -116,25 +150,13 @@ export const buildStatsMessage = (period = 30) => {
 
   const why = reasons(period);
   if (why.length) {
-    blocks.push(heading('Почему не получилось'));
+    blocks.push(heading('Why it did not work'));
     blocks.push(
       table(
-        ['Причина', 'Случаев'],
+        ['Reason', 'Cases'],
         why.map((r) => [REASON_LABELS[r.reason] || r.reason, num(r.count)])
       )
     );
-  }
-
-  if (!s.requests) {
-    return {
-      blocks: [
-        heading('Статистика'),
-        {
-          type: 'paragraph',
-          text: `За последние ${period} дней записей нет. Учёт начинается с версии 0.29.0.`,
-        },
-      ],
-    };
   }
 
   return { blocks };

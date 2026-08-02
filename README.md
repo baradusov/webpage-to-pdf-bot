@@ -34,9 +34,9 @@ summary(30);       // { requests, users, pdf }
 topUsers(30);      // [{ chatId, count }, …]
 topHosts(30);      // [{ host, count }, …]
 outcomes(30);      // [{ outcome, count }, …]
-reasons(30);       // [{ reason, count }, …] — почему не получилось
-returning(30);     // активные и в этом окне, и в предыдущем
-timings(30);       // { count, median, p90, max } — сколько ждут ответа
+reasons(30);       // [{ reason, count }, …] why it did not work
+returning(30);     // active in this window and the previous one
+timings(30);       // { count, median, p90, p99, max }
 slowestHosts(30);  // [{ host, count, avgMs }, …]
 ```
 

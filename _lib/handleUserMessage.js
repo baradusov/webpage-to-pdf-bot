@@ -1,5 +1,6 @@
 import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
 import { CancelledError, getUserMessage } from './errors.js';
+import { checkUrl } from './checkUrl.js';
 
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
 
@@ -39,6 +40,13 @@ export const handleUserMessage = async ({ message }, signal) => {
     }
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+
+    const allowed = await checkUrl(url);
+
+    if (!allowed.ok) {
+      console.log('Rejected url:', url, 'Reason:', allowed.reason);
+      return { pdf: false, message: allowed.message, reason: allowed.reason };
+    }
 
     const { isHtml, contentType } = await checkContentType(url, signal);
 
