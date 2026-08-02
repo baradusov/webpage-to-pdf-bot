@@ -1,6 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.28.0
+* Update puppeteer to 25.4.0 (major), grammy to 1.45.1, @extractus/article-extractor to 8.1.0, dotenv to 17.4.2
+* Require Node.js >= 22.12.0 (puppeteer 25 dropped support for older versions)
+* Pin Node.js version via .tool-versions
+* Drop cosmiconfig dependency chain along with puppeteer 25, removing a high-severity js-yaml advisory
+
 ## 0.27.0
 * Handle 413 error (file too large) with user-friendly message
 * Fix bot hanging when error reply fails due to network issues
