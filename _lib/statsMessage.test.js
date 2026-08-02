@@ -80,8 +80,6 @@ test('reason codes are turned into words', () => {
 });
 
 test('the message is built from blocks, not markup', () => {
-  // Cell text in blocks is literal. Switching the builder to the html or
-  // markdown fields would turn a site name into a markup vector.
   const msg = buildStatsMessage(30);
 
   assert.equal(msg.html, undefined, 'the html field is unused');

@@ -1,6 +1,3 @@
-// Capacity 20 at ~3s per PDF bounds a bystander's wait at about a minute and
-// a half however large the flood; the refill leaves half the bot's throughput
-// for everyone else.
 const CAPACITY = Number(process.env.RATE_LIMIT_BURST) || 20;
 const REFILL_MS = Number(process.env.RATE_LIMIT_REFILL_MS) || 10000;
 const NOTICE_COOLDOWN_MS = 60000;
@@ -23,10 +20,6 @@ const sweep = (now) => {
   }
 };
 
-/**
- * @returns {{allowed: true} | {allowed: false, notify: boolean, retryInMs: number}}
- *   `notify` is true once per cooldown, so the bot does not flood back.
- */
 export const take = (chatId, now = Date.now()) => {
   if (buckets.size > 1000) sweep(now);
 

@@ -16,7 +16,6 @@ test('loopback is refused by address and by name', async () => {
   assert.equal((await reject('http://127.0.0.1/')).reason, 'private_address');
   assert.equal((await reject('http://127.1.2.3/')).reason, 'private_address');
   assert.equal((await reject('http://[::1]/')).reason, 'private_address');
-  // localhost resolves to 127.0.0.1 — this exercises the lookup, not the text
   assert.equal((await reject('http://localhost/')).reason, 'private_address');
 });
 
@@ -55,7 +54,6 @@ test('IPv4 wrapped in IPv6 is not a way round', async () => {
 });
 
 test('a wrapped public IPv4 passes', async () => {
-  // ::ffff:5db8:d822 is 93.184.216.34
   assert.equal((await checkUrl('http://[::ffff:5db8:d822]/')).ok, true);
 });
 

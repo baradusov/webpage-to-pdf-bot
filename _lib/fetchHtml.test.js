@@ -14,7 +14,6 @@ before(async () => {
     }
 
     if (req.url === '/declared-huge') {
-      // Claims to be huge without sending it: the header alone must stop us
       res.writeHead(200, {
         'content-type': 'text/html',
         'content-length': String(MAX_BYTES * 10),
@@ -23,7 +22,6 @@ before(async () => {
     }
 
     if (req.url === '/undeclared-huge') {
-      // Chunked, so there is no length to check — only counting bytes helps
       res.writeHead(200, { 'content-type': 'text/html' });
       const chunk = 'x'.repeat(64 * 1024);
       const timer = setInterval(() => res.write(chunk), 1);
@@ -39,6 +37,11 @@ before(async () => {
 });
 
 after(() => server.close());
+
+test('the ceiling stays under what the process can survive', () => {
+  assert.ok(MAX_BYTES <= 2_000_000, 'above 2 MB the parse outgrows the memory ceiling');
+  assert.ok(MAX_BYTES >= 1_000_000, 'the heaviest real article measured was 0.75 MB');
+});
 
 test('an ordinary page is returned', async () => {
   const html = await fetchHtml(`${base}/small`);

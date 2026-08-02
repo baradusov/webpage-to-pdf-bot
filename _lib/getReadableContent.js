@@ -57,7 +57,6 @@ export const getReadableContent = async (url, signal) => {
       throw error;
     }
 
-    // Cached so a redelivered update is refused without downloading again.
     if (error.name === 'TooLargeError') {
       setInCache(url, { error });
       throw error;

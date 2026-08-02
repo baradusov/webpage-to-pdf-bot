@@ -11,8 +11,6 @@ mkdirSync(dirname(DB_PATH), { recursive: true });
 
 const db = new DatabaseSync(DB_PATH);
 
-// The domain, not the full address: enough for every product question without
-// keeping a reading history tied to a person.
 db.exec(`
   CREATE TABLE IF NOT EXISTS "event" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +26,6 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS "event_chatId" ON "event"("chatId");
 `);
 
-// No migration tool, so missing columns are added by hand.
 const columns = db.prepare('PRAGMA table_info("event")').all().map((c) => c.name);
 for (const [name, type] of [
   ['reason', 'TEXT'],
@@ -53,12 +50,6 @@ const getHost = (url) => {
   }
 };
 
-/**
- * Never throws: statistics must not take the bot down.
- *
- * @param outcome pdf | full | failed | rate_limited
- * @param queueMs how long the message sat before the work started
- */
 export const record = (chatId, url, outcome, reason = null, ms = null, queueMs = null) => {
   try {
     insert.run(
@@ -176,7 +167,6 @@ export const outcomes = (days = 30) =>
     )
     .all(since(days));
 
-/** People active both in this window and in the previous one of equal length. */
 export const returning = (days = 30) => {
   const now = Date.now();
   const row = db

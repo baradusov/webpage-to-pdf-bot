@@ -20,6 +20,7 @@ const REASON_LABELS = {
   bad_url: 'Malformed address',
   dns_failed: 'Site not found',
   rate_limited: 'Sent too fast',
+  poison_update: 'Kept breaking the bot, skipped',
   TooLargeError: 'Page too big to read',
   ParseError: 'Could not parse the page',
   NetworkError: 'Network did not answer',
@@ -51,7 +52,6 @@ const num = (n) => Number(n || 0).toLocaleString('en-US');
 
 const secs = (ms) => (ms == null ? '—' : (ms / 1000).toFixed(1) + 's');
 
-/** Builds the rich-message blocks for the last `period` days. */
 export const buildStatsMessage = (period = 30) => {
   const s = summary(period);
 

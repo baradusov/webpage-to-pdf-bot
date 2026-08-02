@@ -57,7 +57,6 @@ test('one notice per flood, not one per message', () => {
 test('a sustained flood is reminded once per cooldown', () => {
   for (let i = 0; i < CAPACITY; i++) take(7, T0);
 
-  // Faster than the refill, so the bucket never recovers
   const step = REFILL_MS / 3;
   let notices = 0;
 

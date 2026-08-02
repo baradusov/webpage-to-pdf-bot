@@ -5,8 +5,6 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// A file per run: every ':memory:' connection gets its own database, and the
-// test has to read the same one the module writes to.
 const dir = mkdtempSync(join(tmpdir(), 'pdfbot-stats-'));
 process.env.STATS_DB_PATH = join(dir, 'stats.db');
 
@@ -167,7 +165,6 @@ test('queue time is counted separately from work time', () => {
   assert.equal(q.count, 3, 'only rows carrying queueMs count');
   assert.equal(q.max, 60000);
 
-  // work time and queue time stay separate
   assert.notEqual(timings(30).max, q.max);
 });
 
@@ -188,10 +185,8 @@ test('returning means active in both windows', () => {
   const ins = raw.prepare(
     'INSERT INTO "event" ("chatId","host","outcome","createdAt") VALUES (?,?,?,?)'
   );
-  // active in both windows
   ins.run(555, 'c.com', 'pdf', Date.now() - 40 * DAY);
   ins.run(555, 'c.com', 'pdf', Date.now() - 2 * DAY);
-  // previous window only
   ins.run(556, 'c.com', 'pdf', Date.now() - 40 * DAY);
 
   const back = returning(30);

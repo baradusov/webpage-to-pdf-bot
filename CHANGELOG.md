@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.30.2
+* Give up on an update after three tries. A crash before the update was confirmed made Telegram redeliver it forever — the pattern goes back to 2023 and cost whole days of downtime, most recently 267 restarts in two hours. The count is on disk, so it survives the restart it exists to stop
+* Lower the page ceiling from 5 MB to 2 MB. Parsing costs roughly 150 MB of memory per MB of HTML, so a 5 MB page still peaked near 590 MB and was killed by the 400 MB limit — the ceiling was too high to prevent the very loop it was added for. The heaviest article in a month of real traffic was 0.75 MB
+
 ## 0.30.1
 * Refuse pages over 5 MB. A 44 MB page of admissions lists became about a gigabyte of DOM, the process was killed before it could confirm the update, and Telegram redelivered it — the bot restarted every 30 seconds for two hours
 * Download the page directly with a byte ceiling instead of letting the extractor fetch it, so a missing or dishonest `Content-Length` cannot get past the limit

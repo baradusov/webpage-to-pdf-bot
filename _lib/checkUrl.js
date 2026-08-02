@@ -1,7 +1,6 @@
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 
-// Only domains with a 100% failure rate over a month; x.com (72%) is not one.
 const NEVER_ARTICLES = [
   'instagram.com',
   'pinterest.com',
@@ -32,7 +31,6 @@ const isForbiddenIPv4 = (ip) => {
 };
 
 // Node normalises ::ffff:127.0.0.1 to ::ffff:7f00:1, so the hex form has to be
-// unpacked too — a dotted-quad check alone would miss it.
 const unwrapMappedIPv4 = (v) => {
   const tail = v.slice(7);
 
@@ -66,12 +64,6 @@ const isForbiddenIPv6 = (ip) => {
 const isForbiddenAddress = (ip) =>
   isIP(ip) === 6 ? isForbiddenIPv6(ip) : isForbiddenIPv4(ip);
 
-/**
- * Resolves the name before judging it: internal.example.com can point at
- * 127.0.0.1, and a string comparison would wave it through.
- *
- * @returns {Promise<{ok: true} | {ok: false, reason: string, message: string}>}
- */
 export const checkUrl = async (raw) => {
   let url;
 
