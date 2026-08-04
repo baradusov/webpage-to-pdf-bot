@@ -40,6 +40,10 @@ timings(30);       // { count, median, p90, p99, max }
 slowestHosts(30);  // [{ host, count, avgMs }, …]
 ```
 
+`ADMIN_CHAT_ID` is never recorded — that chat is where the bot gets tested,
+and testing is not usage. It is dropped in `record()` rather than filtered in
+each query, so a query added later cannot forget about it.
+
 Every row also carries how long the person waited, so the table answers "how
 slow is the bot" and "which sites drag" — questions the logs never could.
 

@@ -181,6 +181,18 @@ test('a row without timing does not break the stats', () => {
   assert.ok(timings(30).median > 0);
 });
 
+test('the admin chat is not recorded', () => {
+  const before = summary(30).requests;
+
+  process.env.ADMIN_CHAT_ID = '4242';
+  record(4242, 'https://example.com/a', 'pdf');
+  record(4243, 'https://example.com/a', 'pdf');
+  delete process.env.ADMIN_CHAT_ID;
+
+  assert.equal(summary(30).requests, before + 1);
+  assert.equal(topUsers(30).some((u) => u.chatId === 4242), false);
+});
+
 test('returning means active in both windows', () => {
   const ins = raw.prepare(
     'INSERT INTO "event" ("chatId","host","outcome","createdAt") VALUES (?,?,?,?)'
