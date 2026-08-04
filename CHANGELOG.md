@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.31.1
+* Keep the admin chat out of the statistics
+
 ## 0.31.0
 * Show a progress message and replace it with the PDF when ready
 * Skip the progress message when the answer is instant
