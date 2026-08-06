@@ -16,7 +16,12 @@ export const ALLOWED_UPDATES = [
 ];
 
 export const PAGE_STYLE = `
-  body { font-size: 2em; }
+  /* Named per script: DejaVu carries Arabic glyphs and so wins fontconfig's
+     default before Noto is ever reached, which prints Naskh text as sans. */
+  body {
+    font-size: 2em;
+    font-family: 'Liberation Serif', 'Noto Naskh Arabic', 'Noto Serif Telugu', serif;
+  }
   pre { padding: 20px; background-color: linen; }
   code { font-family: monospace; }
   img { max-width: 100%; height: auto; }
