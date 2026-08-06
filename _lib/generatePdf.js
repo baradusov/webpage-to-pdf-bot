@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { withPage } from './browser.js';
 import { PAGE_STYLE } from './config.js';
 import { BrowserError, CancelledError } from './errors.js';
 
@@ -7,33 +7,20 @@ export const generatePdf = async ({ title, content, url }, signal) => {
     throw new CancelledError();
   }
 
-  let browser = null;
-
-  const abortHandler = () => {
-    if (browser) {
-      browser.close().catch(() => {});
-    }
-  };
-
-  signal?.addEventListener('abort', abortHandler);
-
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--single-process', '--no-zygote'],
-      handleSIGTERM: true,
-      handleSIGINT: true,
-    });
+    return await withPage(async (page) => {
+      // The browser outlives this request, so an abort may only take the page.
+      const abortHandler = () => {
+        page.close().catch(() => {});
+      };
 
-    if (signal?.aborted) {
-      throw new CancelledError();
-    }
+      signal?.addEventListener('abort', abortHandler);
 
-    const page = await browser.newPage();
-    const date = new Date();
+      try {
+        const date = new Date();
 
-    await page.setContent(
-      `<!doctype html>
+        await page.setContent(
+          `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -49,27 +36,34 @@ export const generatePdf = async ({ title, content, url }, signal) => {
   </footer>
 </body>
 </html>`,
-      { waitUntil: 'networkidle0' }
-    );
+          // 'load' waits for every image, and getReadableContent strips
+          // loading= attributes so none are deferred. 'networkidle0' would then
+          // sit through its idle timer for nothing — seconds per PDF.
+          { waitUntil: 'load' }
+        );
 
-    if (signal?.aborted) {
-      throw new CancelledError();
-    }
+        if (signal?.aborted) {
+          throw new CancelledError();
+        }
 
-    const buffer = await page.pdf({
-      format: 'A4',
-      margin: {
-        top: '20px',
-        bottom: '20px',
-        left: '20px',
-        right: '20px',
-      },
+        const buffer = await page.pdf({
+          format: 'A4',
+          margin: {
+            top: '20px',
+            bottom: '20px',
+            left: '20px',
+            right: '20px',
+          },
+        });
+
+        return {
+          name: title,
+          pdf: buffer,
+        };
+      } finally {
+        signal?.removeEventListener('abort', abortHandler);
+      }
     });
-
-    return {
-      name: title,
-      pdf: buffer,
-    };
   } catch (error) {
     if (signal?.aborted || error.name === 'CancelledError') {
       throw new CancelledError();
@@ -77,10 +71,5 @@ export const generatePdf = async ({ title, content, url }, signal) => {
 
     console.error('generatePdf error:', url, error.message);
     throw new BrowserError(error.message, url);
-  } finally {
-    signal?.removeEventListener('abort', abortHandler);
-    if (browser !== null) {
-      await browser.close();
-    }
   }
 };

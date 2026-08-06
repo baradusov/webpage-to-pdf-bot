@@ -1,6 +1,5 @@
-// The bot launches with `headless: true`, which since puppeteer 22 means the
-// full Chrome binary. chrome-headless-shell is never used, so skip its
-// download — it is another 262 MB pulled on every `npm ci`.
+// The bot launches with `headless: 'shell'`, so chrome-headless-shell is the
+// only binary it runs — skip full Chrome, another ~350 MB on every `npm ci`.
 module.exports = {
-  'chrome-headless-shell': { skipDownload: true },
+  chrome: { skipDownload: true },
 };

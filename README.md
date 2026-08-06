@@ -5,7 +5,24 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 ## Requirements
 
 - Node.js >= 22.12.0 (required by puppeteer 25)
-- `unzip` — puppeteer extracts the bundled Chrome with it during `npm ci`
+- `unzip` — puppeteer extracts the browser with it during `npm ci`
+- System fonts for the scripts you serve — the renderer has none of its own.
+  `fonts-noto-core` and `fonts-noto-extra` cover Arabic and Indic; check with
+  `fc-list :lang=ar`.
+
+## Rendering
+
+PDFs are printed by chrome-headless-shell — see
+[`.puppeteerrc.cjs`](.puppeteerrc.cjs), which skips the full Chrome download.
+The article reaches the browser as a finished HTML string through
+`setContent()`; nothing navigates to the site.
+
+A browser is kept for the text shaping. Arabic and Indic are a large share of
+the traffic, and the non-browser engines either break bidi inside a paragraph
+or do not claim complex scripts — weigh that before swapping this out.
+
+One instance is shared by every request and closed after `BROWSER_IDLE_MS` of
+idle — see [`_lib/browser.js`](_lib/browser.js).
 
 ## Environment Variables
 
@@ -21,8 +38,10 @@ Every handled message is recorded in SQLite at `data/stats.db` through
 first run; there is nothing to set up. Override the location with
 `STATS_DB_PATH`.
 
-Each row is a chat id, a **domain**, an outcome (`pdf`, `full`, `failed`,
-`not_a_link`) and a timestamp. The full address is deliberately not stored —
+Each row is a chat id, a **domain**, an outcome (`pdf`, `failed`, `not_a_link`,
+plus `full` before 0.32.0) and a timestamp. Nothing is ever deleted or rolled
+up, and queries still name `full` so the old rows stay readable.
+The full address is deliberately not stored —
 the domain answers every product question without keeping a reading history
 tied to a person. Recording never throws: statistics must not take the bot down.
 
