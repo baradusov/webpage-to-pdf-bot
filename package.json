@@ -28,5 +28,8 @@
     "dotenv": "^17.4.2",
     "grammy": "^1.45.1",
     "puppeteer": "^25.4.0"
+  },
+  "allowScripts": {
+    "puppeteer": true
   }
 }
