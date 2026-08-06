@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.32.1
+* Print Arabic in Noto Naskh and Telugu in Noto Serif
+
 ## 0.32.0
 * Remove /full, the screenshot command
 * Print with chrome-headless-shell instead of full Chrome
