@@ -1,6 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.32.0
+* Remove /full, the screenshot command
+* Print with chrome-headless-shell instead of full Chrome
+* Keep one browser between requests
+* Wait for `load` rather than `networkidle0` before printing
+
 ## 0.31.1
 * Keep the admin chat out of the statistics
 
