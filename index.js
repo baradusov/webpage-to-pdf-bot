@@ -5,10 +5,9 @@ import { Bot } from 'grammy';
 import { apiThrottler } from '@grammyjs/transformer-throttler';
 import { handleUserMessage, handleTimeout, getUrls, getUserMessage } from './_lib/index.js';
 import { BOT_REPLIES, ALLOWED_UPDATES, TIMEOUT_MS } from './_lib/config.js';
-import { generateScreenshot } from './_lib/generateScreenshot.js';
+import { closeBrowser } from './_lib/browser.js';
 import { record } from './_lib/stats.js';
 import { buildStatsMessage } from './_lib/statsMessage.js';
-import { checkUrl } from './_lib/checkUrl.js';
 import { take } from './_lib/rateLimit.js';
 import { startAttempt, finishAttempt } from './_lib/attempts.js';
 import { startProgress, finishWithDocument, failWith } from './_lib/progress.js';
@@ -82,48 +81,6 @@ bot.command('stats', async (ctx) => {
   const period = Math.min(Math.max(parseInt(ctx.match, 10) || 30, 1), 3650);
 
   return ctx.api.sendRichMessage(ctx.chat.id, buildStatsMessage(period));
-});
-
-bot.command('full', async (ctx) => {
-  if (!passesRateLimit(ctx)) return;
-  if (!survivesRetries(ctx)) return;
-
-  const urls = getUrls(ctx.message);
-
-  if (urls) {
-    const firstUrl = urls[0];
-    const url = !firstUrl.includes('://') ? `http://${firstUrl}` : firstUrl;
-
-    const allowed = await checkUrl(url);
-
-    if (!allowed.ok) {
-      console.log('Rejected url:', url, 'Reason:', allowed.reason);
-      record(ctx.chat.id, url, 'failed', allowed.reason);
-
-      return ctx.reply(allowed.message, {
-        reply_to_message_id: ctx.message.message_id,
-      });
-    }
-
-    console.log(`Starting to screenshot: ${url}.`);
-
-    const progress = startProgress(ctx, BOT_REPLIES.capturing);
-    const startedAt = Date.now();
-    const data = await handleTimeout((signal) => generateScreenshot(url, signal), TIMEOUT_MS);
-    const status = await progress.settle();
-
-    if (data.error) {
-      return failWith(ctx, status, data.message);
-    }
-
-    console.log(`Screenshot was made for url: ${url}.`);
-    record(ctx.chat.id, url, 'full', null, Date.now() - startedAt);
-    finishAttempt(ctx.update.update_id);
-
-    return finishWithDocument(ctx, status, data.screenshot, `${data.name.trim()}.pdf`);
-  }
-
-  return ctx.reply('No url provided.');
 });
 
 bot.on(ALLOWED_UPDATES, async (ctx) => {
@@ -232,5 +189,10 @@ bot.catch(async (reason) => {
 
 bot.start();
 
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+const shutdown = async (reason) => {
+  await bot.stop(reason);
+  await closeBrowser();
+};
+
+process.once('SIGINT', () => shutdown('SIGINT'));
+process.once('SIGTERM', () => shutdown('SIGTERM'));
