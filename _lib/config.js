@@ -37,7 +37,7 @@ export const BOT_REPLIES = {
 Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
 
 <b>Updates about the bot</b>
-You can read all about the new updates in the bot's news channnel @baradusov_support.
+You can read all about the new updates in the bot's news channnel @unary_bots.
 
 <b>Contacts</b>
 If you have any questions, suggestions, comments or something not working, feel free to message @baradusov.
@@ -45,7 +45,7 @@ If you have any questions, suggestions, comments or something not working, feel 
 <b>Commands</b>
 /help — shows this message`,
   limit:
-    'The bot is disabled indefinitely. Check out @baradusov_support for more info.',
+    'The bot is disabled indefinitely. Check out @unary_bots for more info.',
   working: '⏳ Making your PDF…',
   gaveUp:
     "I tried this link a few times and it keeps breaking me, so I'm skipping it 🙅 Sorry about that.",
