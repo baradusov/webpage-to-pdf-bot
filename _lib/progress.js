@@ -22,12 +22,13 @@ export const startProgress = (ctx, text, delayMs = DELAY_MS) => {
   };
 };
 
-export const finishWithDocument = async (ctx, status, buffer, filename) => {
+export const finishWithDocument = async (ctx, status, buffer, filename, caption) => {
   if (status) {
     try {
       return await ctx.api.editMessageMedia(ctx.chat.id, status.message_id, {
         type: 'document',
         media: new InputFile(buffer, filename),
+        caption,
       });
     } catch (error) {
       console.error('Editing into a document failed:', error.message);
@@ -37,7 +38,21 @@ export const finishWithDocument = async (ctx, status, buffer, filename) => {
 
   return ctx.replyWithDocument(new InputFile(buffer, filename), {
     reply_to_message_id: ctx.message.message_id,
+    caption,
   });
+};
+
+// A group gets no error notice, but the promise of a PDF must not be left up.
+export const discardStatus = async (ctx, status) => {
+  if (!status) return ctx;
+
+  try {
+    await ctx.api.deleteMessage(ctx.chat.id, status.message_id);
+  } catch (error) {
+    console.error('Removing the progress notice failed:', error.message);
+  }
+
+  return ctx;
 };
 
 export const failWith = (ctx, status, text) => {

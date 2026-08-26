@@ -29,26 +29,22 @@ export const PAGE_STYLE = `
 `;
 
 export const BOT_REPLIES = {
-  startCommand:
-    "You send me a link, I'll send you a readable pdf file. More info in /help.",
+  startCommand: 'Send me a link. I send back a PDF you can read.\nMore in /help.',
   helpCommand: `
-<b>Webpage to PDF bot</b> can help you to save web article as pdf file.
+<b>Webpage to PDF bot</b>
 
-Send him a link, it will send back a readable pdf. Keep in mind that the bot oriented on a text content.
+Send a link — I send back a PDF.
+You can also send a saved <b>.html</b> or <b>.txt</b> file.
 
-<b>Updates about the bot</b>
-You can read all about the new updates in the bot's news channnel @unary_bots.
+I work with text. Videos and photo feeds will not work.
 
-<b>Contacts</b>
-If you have any questions, suggestions, comments or something not working, feel free to message @baradusov.
+<b>News</b> @unary_bots
+<b>Questions</b> @baradusov
 
-<b>Commands</b>
-/help — shows this message`,
-  limit:
-    'The bot is disabled indefinitely. Check out @unary_bots for more info.',
+/help — this message`,
+  limit: 'The bot is off for now. News: @unary_bots',
   working: '⏳ Making your PDF…',
-  gaveUp:
-    "I tried this link a few times and it keeps breaking me, so I'm skipping it 🙅 Sorry about that.",
-  tooFast:
-    "That's a lot of links at once 😅 I make PDFs one at a time, so I didn't keep the extra ones — give me a minute and send them again.",
+  notCleaned: 'No article found here, so this is the whole page.',
+  gaveUp: 'This link keeps breaking me, so I skip it 🙅 Sorry.',
+  tooFast: 'Too many links at once 😅 I do one at a time.\nWait a minute and send them again.',
 };

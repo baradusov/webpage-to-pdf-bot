@@ -5,7 +5,8 @@ export const MAX_BYTES = Number(process.env.MAX_PAGE_BYTES) || 2_000_000;
 const USER_AGENT =
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
 
-export const fetchHtml = async (url, signal) => {
+// label keeps the bot token out of errors when fetching a Telegram file.
+export const fetchHtml = async (url, signal, label = url) => {
   let response;
 
   try {
@@ -15,17 +16,17 @@ export const fetchHtml = async (url, signal) => {
     });
   } catch (error) {
     if (error.name === 'AbortError') throw error;
-    throw new NetworkError(error.message, url);
+    throw new NetworkError(error.message, label);
   }
 
   if (!response.ok) {
-    throw new NetworkError(`Request failed with error code ${response.status}`, url);
+    throw new NetworkError(`Request failed with error code ${response.status}`, label);
   }
 
   const declared = Number(response.headers.get('content-length'));
   if (declared > MAX_BYTES) {
     response.body?.cancel();
-    throw new TooLargeError(`Declared ${declared} bytes`, url);
+    throw new TooLargeError(`Declared ${declared} bytes`, label);
   }
 
   const chunks = [];
@@ -35,7 +36,7 @@ export const fetchHtml = async (url, signal) => {
     size += chunk.length;
 
     if (size > MAX_BYTES) {
-      throw new TooLargeError(`Exceeded ${MAX_BYTES} bytes while reading`, url);
+      throw new TooLargeError(`Exceeded ${MAX_BYTES} bytes while reading`, label);
     }
 
     chunks.push(chunk);

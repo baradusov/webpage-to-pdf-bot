@@ -1,6 +1,8 @@
 # Webpage to PDF Bot
 
-Telegram bot that converts web articles into readable PDF files. Send a link, get a clean PDF back.
+Telegram bot that converts web articles into readable PDF files. Send a link,
+get a clean PDF back. A saved `.html` or `.txt` file works the same way — it is
+read from the upload instead of fetched, and goes through the same sanitizer.
 
 ## Requirements
 
@@ -15,7 +17,8 @@ Telegram bot that converts web articles into readable PDF files. Send a link, ge
 PDFs are printed by chrome-headless-shell — see
 [`.puppeteerrc.cjs`](.puppeteerrc.cjs), which skips the full Chrome download.
 The article reaches the browser as a finished HTML string through
-`setContent()`; nothing navigates to the site.
+`setContent()`; nothing navigates to the site. Scripting is off in that page
+and the title is escaped — both come from the fetched page and are not trusted.
 
 A browser is kept for the text shaping. Arabic and Indic are a large share of
 the traffic, and the non-browser engines either break bidi inside a paragraph
@@ -38,10 +41,9 @@ Every handled message is recorded in SQLite at `data/stats.db` through
 first run; there is nothing to set up. Override the location with
 `STATS_DB_PATH`.
 
-Each row is a chat id, a **domain**, an outcome (`pdf`, `failed`, `not_a_link`,
-plus `full` before 0.32.0) and a timestamp. Nothing is ever deleted or rolled
-up, and queries still name `full` so the old rows stay readable.
-The full address is deliberately not stored —
+Each row is a chat id, a **domain**, an outcome (`pdf`, `failed`,
+`rate_limited`), the kind of message that carried it and a timestamp. Nothing
+is ever deleted or rolled up. The whole address is deliberately not stored —
 the domain answers every product question without keeping a reading history
 tied to a person. Recording never throws: statistics must not take the bot down.
 

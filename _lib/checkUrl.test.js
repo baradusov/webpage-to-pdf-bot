@@ -88,6 +88,16 @@ test('social sites are refused before any network call', async () => {
   }
 });
 
+test('video sites and feeds are refused in their own words', async () => {
+  const video = await reject('https://youtube.com/watch?v=1');
+  assert.match(video.message, /video/);
+
+  const feed = await reject('https://instagram.com/p/x');
+  assert.match(feed.message, /feed/);
+
+  assert.notEqual(video.message, feed.message);
+});
+
 test('sites that sometimes work are not blocked', async () => {
   for (const url of ['https://x.com/user/status/1', 'https://share.google/abc']) {
     assert.equal((await checkUrl(url)).ok, true, url);

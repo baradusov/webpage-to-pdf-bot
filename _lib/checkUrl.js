@@ -1,18 +1,20 @@
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 
-const NEVER_ARTICLES = [
+// Split only to word the refusal properly, the reason stays the same.
+const VIDEO_SITES = ['tiktok.com', 'youtube.com', 'youtu.be'];
+
+const FEED_SITES = [
   'instagram.com',
   'pinterest.com',
   'pinterest.ru',
-  'tiktok.com',
-  'youtube.com',
-  'youtu.be',
   'facebook.com',
 ];
 
+const NEVER_ARTICLES = [...VIDEO_SITES, ...FEED_SITES];
+
 const PRIVATE_MESSAGE =
-  "That address is not reachable from the internet, so I won't open it 🙅";
+  "I can't open this address 🙅";
 
 const matchesHost = (host, domain) =>
   host === domain || host.endsWith('.' + domain);
@@ -73,7 +75,7 @@ export const checkUrl = async (raw) => {
     return {
       ok: false,
       reason: 'bad_url',
-      message: "That doesn't look like a valid address 🤔",
+      message: "That doesn't look like a link 🤔",
     };
   }
 
@@ -81,18 +83,21 @@ export const checkUrl = async (raw) => {
     return {
       ok: false,
       reason: 'bad_scheme',
-      message: 'I can only open http and https links 🙅',
+      message: 'I open http and https links only 🙅',
     };
   }
 
   const host = url.hostname.replace(/^\[|\]$/g, '').toLowerCase();
 
   if (NEVER_ARTICLES.some((d) => matchesHost(host, d))) {
+    const isVideo = VIDEO_SITES.some((d) => matchesHost(host, d));
+
     return {
       ok: false,
       reason: 'never_articles',
-      message:
-        'This site keeps its content behind a script, so there is no article for me to save 🙅\nSend me a link to a text page instead.',
+      message: isVideo
+        ? "That's a video. I make PDFs from text 🙅"
+        : "That's a feed, not an article 🙅",
     };
   }
 
@@ -109,7 +114,7 @@ export const checkUrl = async (raw) => {
     return {
       ok: false,
       reason: 'dns_failed',
-      message: "I can't find that site 😞",
+      message: "I can't find this site 😞",
     };
   }
 

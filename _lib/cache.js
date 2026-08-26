@@ -30,4 +30,5 @@ export const clearExpired = () => {
   }
 };
 
-setInterval(clearExpired, 10 * 60 * 1000);
+// Sweeping must not be the reason the process stays alive.
+setInterval(clearExpired, 10 * 60 * 1000).unref?.();

@@ -3,7 +3,7 @@ import {
   topUsers,
   topHosts,
   reasons,
-  outcomes,
+  kinds,
   returning,
   timings,
   slowestHosts,
@@ -24,6 +24,7 @@ const REASON_LABELS = {
   TooLargeError: 'Page too big to read',
   ParseError: 'Could not parse the page',
   NetworkError: 'Network did not answer',
+  ScriptedPageError: 'Page is built by scripts',
   TimeoutError: 'Took too long',
   BrowserError: 'Browser error',
   CancelledError: 'Cancelled',
@@ -69,7 +70,6 @@ export const buildStatsMessage = (period = 30) => {
 
   const rate = Math.round((s.pdf / s.requests) * 100);
   const perUser = s.users ? (s.requests / s.users).toFixed(1) : '0';
-  const full = outcomes(period).find((o) => o.outcome === 'full')?.count || 0;
 
   const blocks = [
     heading(`Statistics · ${period} days`),
@@ -82,7 +82,6 @@ export const buildStatsMessage = (period = 30) => {
         ['PDFs sent', num(s.pdf)],
         ['Success rate', rate + '%'],
         ['Returning from last period', num(returning(period))],
-        ['/full calls', num(full)],
       ]
     ),
   ];
@@ -145,6 +144,17 @@ export const buildStatsMessage = (period = 30) => {
       table(
         ['Site', 'Requests'],
         hosts.map((h) => [h.host, num(h.count)])
+      )
+    );
+  }
+
+  const sent = kinds(period);
+  if (sent.length) {
+    blocks.push(heading('What people send'));
+    blocks.push(
+      table(
+        ['Kind', 'Messages', 'People'],
+        sent.map((k) => [k.kind, num(k.count), num(k.users)])
       )
     );
   }

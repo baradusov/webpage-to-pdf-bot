@@ -1,6 +1,17 @@
-import { getUrls, generatePdf, getReadableContent } from '../_lib/index.js';
+import {
+  getUrls,
+  generatePdf,
+  getReadableContent,
+  getReadableFile,
+  getFileHtml,
+  isReadableDocument,
+} from '../_lib/index.js';
 import { CancelledError, getUserMessage } from './errors.js';
 import { checkUrl } from './checkUrl.js';
+import { BOT_REPLIES } from './config.js';
+
+// A fallback is still a result, but it must say it was not cleaned up.
+const captionFor = (readable) => (readable.degraded ? BOT_REPLIES.notCleaned : undefined);
 
 const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36';
 
@@ -27,14 +38,24 @@ const checkContentType = async (url, signal) => {
   }
 };
 
-export const handleUserMessage = async ({ message }, signal) => {
+export const handleUserMessage = async (ctx, signal) => {
+  const { message } = ctx;
+
   try {
     const urls = getUrls(message);
 
     if (!urls) {
+      if (isReadableDocument(message.document)) {
+        const html = await getFileHtml(ctx.api, message.document, signal);
+        const readable = await getReadableFile(html, message.document.file_name || 'page.html');
+        const { pdf, name } = await generatePdf(readable, signal);
+
+        return { pdf, name, message: null, caption: captionFor(readable) };
+      }
+
       return {
         pdf: false,
-        message: "It doesn't seem to be a link 🤔",
+        message: "I need a link 🤔\nYou can also send a saved .html file.",
         reason: 'not_a_link',
       };
     }
@@ -54,7 +75,7 @@ export const handleUserMessage = async ({ message }, signal) => {
       console.log('Rejected non-HTML url:', url, 'Content-Type:', contentType);
       return {
         pdf: false,
-        message: "I can only process web pages, not media files 🙅",
+        message: "That's not a web page 🙅",
         reason: 'not_html',
       };
     }
@@ -69,7 +90,7 @@ export const handleUserMessage = async ({ message }, signal) => {
     if (!readableContent || readableContent.error) {
       return {
         pdf: false,
-        message: "Can't get the content from the link 😞",
+        message: "I can't get the text from this link 😞",
         reason: 'no_content',
       };
     }
@@ -80,10 +101,11 @@ export const handleUserMessage = async ({ message }, signal) => {
       pdf,
       name,
       message: urls.length > 1 ? 'One link at a time, sorry' : null,
+      caption: captionFor(readableContent),
     };
   } catch (error) {
     if (signal?.aborted || error.name === 'CancelledError') {
-      return { error: true, message: 'Request cancelled.' };
+      return { error: true, message: 'Cancelled.' };
     }
 
     console.error('handleUserMessage error:', error.name, error.message);

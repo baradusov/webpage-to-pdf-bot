@@ -11,7 +11,7 @@ export class NetworkError extends BotError {
   constructor(message, url) {
     super(
       message,
-      "Can't open the link. Please check if the URL is correct and the website is accessible 😞",
+      "Can't open this link 😞 Check it and try again.",
       true
     );
     this.name = 'NetworkError';
@@ -23,10 +23,22 @@ export class ParseError extends BotError {
   constructor(message, url) {
     super(
       message,
-      "Can't extract content from this page. The website structure may not be supported 😞",
+      "I can't find the text on this page 😞",
       false
     );
     this.name = 'ParseError';
+    this.url = url;
+  }
+}
+
+export class ScriptedPageError extends BotError {
+  constructor(message, url) {
+    super(
+      message,
+      'I see an empty page 🙅 It loads with scripts.\nSave the page as a file and send me the file.',
+      false
+    );
+    this.name = 'ScriptedPageError';
     this.url = url;
   }
 }
@@ -35,7 +47,7 @@ export class TooLargeError extends BotError {
   constructor(message, url) {
     super(
       message,
-      'That page is too big for me to read 🙅 Send me a link to an article instead.',
+      'This page is too big 🙅 Send a shorter one.',
       false
     );
     this.name = 'TooLargeError';
@@ -47,7 +59,7 @@ export class BrowserError extends BotError {
   constructor(message, url) {
     super(
       message,
-      'Something went wrong while generating the PDF. Please try again later 😞',
+      'Something went wrong 😞 Please try again later.',
       true
     );
     this.name = 'BrowserError';
@@ -59,7 +71,7 @@ export class TimeoutError extends BotError {
   constructor(url) {
     super(
       `Request timed out for ${url}`,
-      'The webpage is taking too long to load. Please try again later 😞',
+      'This page is too slow 😞 Please try again later.',
       true
     );
     this.name = 'TimeoutError';
