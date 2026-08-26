@@ -20,6 +20,7 @@ db.exec(`
     "reason" TEXT,
     "ms" INTEGER,
     "queueMs" INTEGER,
+    "kind" TEXT,
     "createdAt" INTEGER NOT NULL
   );
   CREATE INDEX IF NOT EXISTS "event_createdAt" ON "event"("createdAt");
@@ -31,6 +32,7 @@ for (const [name, type] of [
   ['reason', 'TEXT'],
   ['ms', 'INTEGER'],
   ['queueMs', 'INTEGER'],
+  ['kind', 'TEXT'],
 ]) {
   if (!columns.includes(name)) {
     db.exec(`ALTER TABLE "event" ADD COLUMN "${name}" ${type}`);
@@ -38,7 +40,7 @@ for (const [name, type] of [
 }
 
 const insert = db.prepare(
-  'INSERT INTO "event" ("chatId", "host", "outcome", "reason", "ms", "queueMs", "createdAt") VALUES (?, ?, ?, ?, ?, ?, ?)'
+  'INSERT INTO "event" ("chatId", "host", "outcome", "reason", "ms", "queueMs", "kind", "createdAt") VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
 );
 
 const getHost = (url) => {
@@ -59,7 +61,15 @@ const isAdmin = (chatId) => {
   return Boolean(admin) && String(chatId) === String(admin);
 };
 
-export const record = (chatId, url, outcome, reason = null, ms = null, queueMs = null) => {
+export const record = (
+  chatId,
+  url,
+  outcome,
+  reason = null,
+  ms = null,
+  queueMs = null,
+  kind = null
+) => {
   if (isAdmin(chatId)) return;
 
   try {
@@ -70,6 +80,7 @@ export const record = (chatId, url, outcome, reason = null, ms = null, queueMs =
       reason,
       ms == null ? null : Math.round(ms),
       queueMs == null ? null : Math.round(queueMs),
+      kind,
       Date.now()
     );
   } catch (error) {
@@ -129,7 +140,7 @@ export const timings = (days = 30) =>
     db
       .prepare(
         `SELECT "ms" AS ms FROM "event"
-         WHERE "createdAt" >= ? AND "ms" IS NOT NULL AND "outcome" IN ('pdf','full')
+         WHERE "createdAt" >= ? AND "ms" IS NOT NULL AND "outcome" = 'pdf'
          ORDER BY "ms"`
       )
       .all(since(days))
@@ -154,7 +165,7 @@ export const slowestHosts = (days = 30, limit = 5, minSamples = 5) =>
       `SELECT "host" AS host, COUNT(*) AS count, CAST(AVG("ms") AS INTEGER) AS avgMs
        FROM "event"
        WHERE "createdAt" >= ? AND "ms" IS NOT NULL AND "host" IS NOT NULL
-         AND "outcome" IN ('pdf','full')
+         AND "outcome" = 'pdf'
        GROUP BY "host" HAVING COUNT(*) >= ?
        ORDER BY avgMs DESC LIMIT ?`
     )
@@ -166,6 +177,15 @@ export const reasons = (days = 30) =>
       `SELECT "reason" AS reason, COUNT(*) AS count
        FROM "event" WHERE "createdAt" >= ? AND "reason" IS NOT NULL
        GROUP BY "reason" ORDER BY count DESC`
+    )
+    .all(since(days));
+
+export const kinds = (days = 30) =>
+  db
+    .prepare(
+      `SELECT "kind" AS kind, COUNT(*) AS count, COUNT(DISTINCT "chatId") AS users
+       FROM "event" WHERE "createdAt" >= ? AND "kind" IS NOT NULL
+       GROUP BY "kind" ORDER BY count DESC`
     )
     .all(since(days));
 

@@ -19,6 +19,7 @@ const {
   timings,
   slowestHosts,
   queueTimings,
+  kinds,
 } = await import('./stats.js');
 
 const raw = new DatabaseSync(process.env.STATS_DB_PATH);
@@ -89,11 +90,11 @@ test('top users are ordered by request count', () => {
 
 test('outcomes are broken down by kind', () => {
   record(10, 'https://b.com/x', 'failed', 'no_content');
-  record(10, 'https://b.com/y', 'full');
+  record(10, 'https://b.com/y', 'rate_limited', 'rate_limited');
 
   const map = Object.fromEntries(outcomes(30).map((o) => [o.outcome, o.count]));
   assert.ok(map.pdf > 0);
-  assert.equal(map.full, 1);
+  assert.equal(map.rate_limited, 1);
   assert.ok(map.failed >= 1);
 });
 
@@ -215,4 +216,29 @@ test('returning means active in both windows', () => {
 
   assert.ok(ids.includes(555));
   assert.ok(!ids.includes(556));
+});
+
+test('the kind of message is recorded and counted', () => {
+  record(70, undefined, 'failed', 'not_a_link', null, null, 'photo');
+  record(71, undefined, 'failed', 'not_a_link', null, null, 'photo');
+  record(72, undefined, 'failed', 'not_a_link', null, null, 'document:application/pdf');
+  record(73, 'https://k.example.com/a', 'pdf', null, 100, 0, 'text');
+
+  const byKind = Object.fromEntries(kinds(30).map((k) => [k.kind, k]));
+
+  assert.equal(byKind.photo.count, 2);
+  assert.equal(byKind.photo.users, 2);
+  assert.equal(byKind['document:application/pdf'].count, 1);
+  assert.equal(byKind.text.count, 1);
+});
+
+test('a request without a kind is still recorded', () => {
+  record(74, 'https://k2.example.com/a', 'pdf');
+
+  const stored = raw
+    .prepare('SELECT "kind" AS kind FROM "event" WHERE "chatId" = ?')
+    .get(74);
+
+  assert.equal(stored.kind, null);
+  assert.ok(!kinds(30).some((k) => k.kind === null));
 });
