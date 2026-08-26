@@ -1,6 +1,25 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.33.0
+* Escape the article title before printing it
+* Turn scripting off in the printing page
+* Keep the bot token out of errors and logs
+* Strip slashes and line breaks from the PDF file name
+* Turn an uploaded .html or .txt file into a PDF
+* Print the page as it is when no article is found
+* Say in the caption when a PDF was not cleaned up
+* Say when a page is built by scripts
+* Shorten every reply to plain English
+* Mention file upload in the "I need a link" reply
+* Tell video links and photo feeds apart when refusing
+* Record failures in groups too
+* Record what kind of message people send
+* Remove the progress message in a group on failure
+* Spend the rate limit on uploaded files as well
+* Stop naming `full` in the statistics
+* Unref the cache sweep so it cannot hold the process
+
 ## 0.32.2
 * Point the news channel at @unary_bots
 
