@@ -1,6 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.34.0
+* Update article-extractor to 9, puppeteer and sanitize-html to latest
+* Own the sanitiser whitelist, article-extractor 9 dropped its own
+* Drop iframe, video and audio from it, a PDF cannot show them
+* Clear the nanoid advisory
+
 ## 0.33.0
 * Escape the article title before printing it
 * Turn scripting off in the printing page
