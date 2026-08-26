@@ -1,6 +1,8 @@
 import { withPage } from './browser.js';
 import { PAGE_STYLE } from './config.js';
 import { BrowserError, CancelledError } from './errors.js';
+// og:title is attacker-controlled: the extractor sanitises the body, not metadata.
+import { escapeHtml } from './escapeHtml.js';
 
 export const generatePdf = async ({ title, content, url }, signal) => {
   if (signal?.aborted) {
@@ -18,21 +20,30 @@ export const generatePdf = async ({ title, content, url }, signal) => {
 
       try {
         const date = new Date();
+        const safeTitle = escapeHtml(title);
+        const safeUrl = escapeHtml(url);
+        // An uploaded file has a name here, not an address to link to.
+        const source = /^https?:\/\//i.test(String(url ?? ''))
+          ? `<a class="source" href="${safeUrl}">${safeUrl}</a>`
+          : safeUrl;
+
+        // Nothing here needs scripting, and 'load' waits on images, not on JS.
+        await page.setJavaScriptEnabled(false);
 
         await page.setContent(
           `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>${title}</title>
+  <title>${safeTitle}</title>
   <style>${PAGE_STYLE}</style>
 </head>
 <body>
-  <h1>${title}</h1>
+  <h1>${safeTitle}</h1>
   ${content}
   <footer>
     <p>PDF generated at: ${date}</p>
-    <p>Source: <a class="source" href="${url}">${url}</a></p>
+    <p>Source: ${source}</p>
   </footer>
 </body>
 </html>`,
