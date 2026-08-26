@@ -1,5 +1,6 @@
-import { extractFromHtml, getSanitizeHtmlOptions } from '@extractus/article-extractor';
+import { extractFromHtml } from '@extractus/article-extractor';
 import sanitize from 'sanitize-html';
+import { SANITIZE_OPTIONS } from './sanitizeOptions.js';
 import {
   NetworkError,
   ParseError,
@@ -24,7 +25,7 @@ const MIN_TEXT = 500;
 const stripped = (html) => {
   const body = String(html ?? '').replace(/<head[\s\S]*?<\/head>/i, '');
 
-  return sanitize(body, getSanitizeHtmlOptions()).trim();
+  return sanitize(body, SANITIZE_OPTIONS).trim();
 };
 
 const removeLoadingAttributes = (html) => {
