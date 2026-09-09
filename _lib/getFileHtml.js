@@ -1,4 +1,4 @@
-import { fetchHtml, MAX_BYTES } from './fetchHtml.js';
+import { fetchHtml, MAX_UPLOAD_BYTES } from './fetchHtml.js';
 import { TooLargeError } from './errors.js';
 
 const READABLE_MIME = ['text/html', 'application/xhtml+xml', 'text/plain'];
@@ -16,12 +16,12 @@ export const isReadableDocument = (document) => {
 export const getFileHtml = async (api, document, signal) => {
   const label = document.file_name || 'the file';
 
-  if (document.file_size > MAX_BYTES) {
+  if (document.file_size > MAX_UPLOAD_BYTES) {
     throw new TooLargeError(`Declared ${document.file_size} bytes`, label);
   }
 
   const file = await api.getFile(document.file_id);
   const url = `https://api.telegram.org/file/bot${api.token}/${file.file_path}`;
 
-  return fetchHtml(url, signal, label);
+  return fetchHtml(url, signal, label, MAX_UPLOAD_BYTES);
 };

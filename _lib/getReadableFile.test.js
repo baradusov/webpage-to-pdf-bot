@@ -84,7 +84,7 @@ test('the bot token never reaches an error message', async () => {
   }
 });
 
-test('a file over the page limit is refused before download', async () => {
+test('a file over the upload limit is refused before download', async () => {
   const api = {
     token: 'SECRET-TOKEN',
     getFile: async () => assert.fail('must not reach Telegram'),
@@ -112,4 +112,26 @@ test('a file name loses its extension but keeps the rest', async () => {
   const r = await getReadableFile('<html><body><p>Bare text here.</p></body></html>', 'IBPS PO - Prelims 08.html');
 
   assert.equal(r.title, 'IBPS PO - Prelims 08');
+});
+
+test('a file between the page and upload limits is accepted', async () => {
+  const api = {
+    token: 'T',
+    getFile: async () => ({ file_path: 'documents/f.html' }),
+  };
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({
+    ok: true,
+    headers: new Map([['content-length', '3000000']]),
+    body: (async function* () {
+      yield Buffer.from('<html><body><p>big but fine</p></body></html>');
+    })(),
+  });
+
+  try {
+    const html = await getFileHtml(api, { file_id: 'a', file_name: 'mid.html', file_size: 3_000_000 });
+    assert.match(html, /big but fine/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });

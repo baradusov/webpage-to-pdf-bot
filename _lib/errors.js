@@ -7,15 +7,22 @@ export class BotError extends Error {
   }
 }
 
+// A site that turns the server away will do it again: saying "try again" only
+// sends people back for a second helping of the same refusal.
+const REFUSED = [401, 402, 403, 451];
+
 export class NetworkError extends BotError {
-  constructor(message, url) {
+  constructor(message, url, status = null) {
     super(
       message,
-      "Can't open this link 😞 Check it and try again.",
-      true
+      REFUSED.includes(status)
+        ? "This site does not let me in 🙅 It blocks bots like me."
+        : "Can't open this link 😞 Check it and try again.",
+      !REFUSED.includes(status)
     );
     this.name = 'NetworkError';
     this.url = url;
+    this.status = status;
   }
 }
 
