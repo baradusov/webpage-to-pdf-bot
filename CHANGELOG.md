@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.34.1
+* Let an uploaded file be 5 MB, the 2 MB limit was meant for fetched pages
+* Say when a site blocks the bot instead of asking for a retry
+
 ## 0.34.0
 * Update article-extractor to 9, puppeteer and sanitize-html to latest
 * Own the sanitiser whitelist, article-extractor 9 dropped its own
