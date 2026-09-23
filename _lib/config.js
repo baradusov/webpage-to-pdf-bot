@@ -45,6 +45,8 @@ I work with text. Videos and photo feeds will not work.
   limit: 'The bot is off for now. News: @unary_bots',
   working: '⏳ Making your PDF…',
   notCleaned: 'No article found here, so this is the whole page.',
+  pastedHtml: "That's HTML code 🙂 Telegram cuts long messages.\nSave it as a .html file and send me the file.",
+  alreadyPdf: "That's already a PDF 🙂\nSend me a link to a web page.",
   gaveUp: 'This link keeps breaking me, so I skip it 🙅 Sorry.',
   tooFast: 'Too many links at once 😅 I do one at a time.\nWait a minute and send them again.',
 };

@@ -9,6 +9,11 @@ import {
 import { CancelledError, getUserMessage } from './errors.js';
 import { checkUrl } from './checkUrl.js';
 import { BOT_REPLIES } from './config.js';
+import { telegramPost } from './telegramPost.js';
+import { looksLikeHtml, isWholePage } from './pastedHtml.js';
+
+const isPdf = (document) =>
+  document?.mime_type === 'application/pdf' || /\.pdf$/i.test(document?.file_name || '');
 
 // A fallback is still a result, but it must say it was not cleaned up.
 const captionFor = (readable) => (readable.degraded ? BOT_REPLIES.notCleaned : undefined);
@@ -53,6 +58,21 @@ export const handleUserMessage = async (ctx, signal) => {
         return { pdf, name, message: null, caption: captionFor(readable) };
       }
 
+      if (isPdf(message.document)) {
+        return { pdf: false, message: BOT_REPLIES.alreadyPdf, reason: 'already_pdf' };
+      }
+
+      if (isWholePage(message.text)) {
+        const readable = await getReadableFile(message.text, 'page.html');
+        const { pdf, name } = await generatePdf(readable, signal);
+
+        return { pdf, name, message: null, caption: captionFor(readable) };
+      }
+
+      if (looksLikeHtml(message.text)) {
+        return { pdf: false, message: BOT_REPLIES.pastedHtml, reason: 'pasted_html' };
+      }
+
       return {
         pdf: false,
         message: "I need a link 🤔\nYou can also send a saved .html file.",
@@ -61,15 +81,17 @@ export const handleUserMessage = async (ctx, signal) => {
     }
 
     const url = !urls[0].includes('://') ? `http://${urls[0]}` : urls[0];
+    const post = telegramPost(url);
+    const target = post?.url ?? url;
 
-    const allowed = await checkUrl(url);
+    const allowed = await checkUrl(target);
 
     if (!allowed.ok) {
       console.log('Rejected url:', url, 'Reason:', allowed.reason);
       return { pdf: false, message: allowed.message, reason: allowed.reason };
     }
 
-    const { isHtml, contentType } = await checkContentType(url, signal);
+    const { isHtml, contentType } = await checkContentType(target, signal);
 
     if (!isHtml) {
       console.log('Rejected non-HTML url:', url, 'Content-Type:', contentType);
@@ -80,8 +102,8 @@ export const handleUserMessage = async (ctx, signal) => {
       };
     }
 
-    console.log('Started processing url:', url);
-    const readableContent = await getReadableContent(url, signal);
+    console.log('Started processing url:', target);
+    const readableContent = await getReadableContent(target, signal);
 
     if (signal?.aborted) {
       throw new CancelledError();
@@ -95,7 +117,10 @@ export const handleUserMessage = async (ctx, signal) => {
       };
     }
 
-    const { pdf, name } = await generatePdf(readableContent, signal);
+    const { pdf, name } = await generatePdf(
+      post ? { ...readableContent, title: post.title, url } : readableContent,
+      signal
+    );
 
     return {
       pdf,

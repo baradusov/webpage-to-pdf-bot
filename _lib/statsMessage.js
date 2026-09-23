@@ -12,6 +12,8 @@ import {
 
 const REASON_LABELS = {
   not_a_link: 'Not a link',
+  pasted_html: 'Pasted HTML code',
+  already_pdf: 'Sent a PDF',
   not_html: 'Not a web page',
   no_content: 'Site returned no text',
   never_articles: 'Site never yields an article',
