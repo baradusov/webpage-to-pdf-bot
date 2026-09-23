@@ -1,6 +1,12 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.35.0
+* Read a Telegram channel post through its embed view
+* Turn a whole HTML page pasted as text into a PDF
+* Ask for a file when pasted HTML arrives cut into pieces
+* Say so when someone sends a PDF
+
 ## 0.34.1
 * Let an uploaded file be 5 MB, the 2 MB limit was meant for fetched pages
 * Say when a site blocks the bot instead of asking for a retry
