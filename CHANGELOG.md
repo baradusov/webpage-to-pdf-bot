@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.35.1
+* Point to @anydoc_to_md_bot for text out of a PDF
+
 ## 0.35.0
 * Read a Telegram channel post through its embed view
 * Turn a whole HTML page pasted as text into a PDF
