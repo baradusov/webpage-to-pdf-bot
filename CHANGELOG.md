@@ -1,6 +1,10 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.35.2
+* Update puppeteer and sanitize-html to latest
+* Clear the sanitize-html, zod and source-map-js advisories
+
 ## 0.35.1
 * Point to @anydoc_to_md_bot for text out of a PDF
 
