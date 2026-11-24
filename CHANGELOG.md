@@ -1,6 +1,9 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.35.3
+* Update grammy, puppeteer, sanitize-html and dotenv
+
 ## 0.35.2
 * Update puppeteer and sanitize-html to latest
 * Clear the sanitize-html, zod and source-map-js advisories
